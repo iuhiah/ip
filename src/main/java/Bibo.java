@@ -6,12 +6,13 @@ public class Bibo {
     private int todoPointer = 0;
 
     private String biboSays = "\n---------- Bibo says: ----------";
+    private String[] validKeywords = {"todo", "deadline", "event", "mark", "unmark"};
 
     private void speak(String message) {
         System.out.println(message);
     }
 
-    private void commands() {
+    private void commands() throws BiboException {
         while (true) {
             this.speak("\n----------- You say: -----------");
             String command = this.input.nextLine();
@@ -28,6 +29,17 @@ public class Bibo {
             }
 
             String keyword = command.split(" ")[0];
+
+            try {
+                if (!java.util.Arrays.asList(validKeywords).contains(keyword)) {
+                    // keyword not found
+                    throw new BiboException("I'm sorry, I don't understand that command. Try again!");
+                }
+            } catch (BiboException e) {
+                this.speak(e.getMessage());
+                continue;
+            }
+
             // not index +1 in case mistyped input is only one word long (no spaces)
             String args = command.substring(keyword.length()).trim();
             
@@ -37,7 +49,14 @@ public class Bibo {
             else if (keyword.equals("unmark")) {
                 this.unmarkTask(Integer.parseInt(args));
             }
-            else if (keyword.equals("todo")) {
+
+            // task creation
+            if (args.isEmpty()) {
+                this.speak("Task description can't be empty! Try again.");
+                continue;
+            }
+
+            if (keyword.equals("todo")) {
                 this.addTodo(args);
             }
             else if (keyword.equals("deadline")) {
@@ -47,9 +66,6 @@ public class Bibo {
             else if (keyword.equals("event")) {
                 String[] parts = args.split("( /from | /to )");
                 this.addEvent(parts[0], parts[1], parts[2]);
-            }
-            else {
-                this.speak("I'm sorry, I don't understand that command. Try again!");
             }
 
             this.speak("What's next?");
@@ -85,9 +101,16 @@ public class Bibo {
         }
     }
 
-    private void markTask(int index) {
+    private boolean checkTask(int index) {
         if (index < 1 || index > todoPointer) {
             this.speak("That's not in your to-do list! Try something else.");
+            return false;
+        }
+        return true;
+    }
+
+    private void markTask(int index) {
+        if (!this.checkTask(index)) {
             return;
         }
 
@@ -97,8 +120,7 @@ public class Bibo {
     }
 
     private void unmarkTask(int index) {
-        if (index < 1 || index > todoPointer) {
-            this.speak("That's not in your to-do list! Try something else.");
+        if (!this.checkTask(index)) {
             return;
         }
 
@@ -115,7 +137,7 @@ public class Bibo {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BiboException {
         Bibo bibo = new Bibo();
         bibo.speak(bibo.biboSays);
         bibo.speak("Hello! I'm Bibo.\nWhat can I do for you?");

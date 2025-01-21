@@ -7,7 +7,6 @@ What can I do for you?
 
 ---------- Bibo says: ----------
 I'm sorry, I don't understand that command. Try again!
-What's next?
 
 ----------- You say: -----------
 
@@ -32,6 +31,11 @@ Got it. I've added this task:
 [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
 What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+Task description can't be empty! Try again.
 
 ----------- You say: -----------
 
