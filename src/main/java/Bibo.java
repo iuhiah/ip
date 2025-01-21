@@ -1,15 +1,15 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Bibo {
     private Scanner scanner = new Scanner(System.in);
-    private Task[] todolist = new Task[100];
-    private int todoPointer = 0;
+    private ArrayList<Task> todolist = new ArrayList<Task>();
 
     private String biboSays = "\n---------- Bibo says: ----------";
     private enum Commands {
         BYE, LIST,
         TODO, DEADLINE, EVENT,
-        MARK, UNMARK
+        MARK, UNMARK, DELETE
     }
 
     private void speak(String message) {
@@ -49,6 +49,9 @@ public class Bibo {
                 case UNMARK:
                     this.unmarkTask(args);
                     break;
+                case DELETE:
+                    this.deleteTask(args);
+                    break;
             }
         } catch (BiboException e) {
             this.speak(e.toString());
@@ -70,8 +73,7 @@ public class Bibo {
             throw new BiboTaskDescriptionException("Todo");
         }
 
-        this.todolist[todoPointer] = new Todo(description);
-        this.todoPointer++;
+        this.todolist.add(new Todo(description));
         this.addedTaskSpeak();
     }
 
@@ -81,8 +83,7 @@ public class Bibo {
             description = split[0];
             String by = split[1];
 
-            this.todolist[todoPointer] = new Deadline(description, by);
-            this.todoPointer++;
+            this.todolist.add(new Deadline(description, by));
             this.addedTaskSpeak();
         } catch (Exception e) {
             throw new BiboTaskDescriptionException("Deadline");
@@ -96,8 +97,7 @@ public class Bibo {
             String start = split[1];
             String end = split[2];
 
-            this.todolist[todoPointer] = new Event(description, start, end);
-            this.todoPointer++;
+            this.todolist.add(new Event(description, start, end));
             this.addedTaskSpeak();
         } catch (Exception e) {
             throw new BiboTaskDescriptionException("Event");
@@ -105,22 +105,48 @@ public class Bibo {
     }
 
     private void addedTaskSpeak() {
+        int size = this.todolist.size();
+
         this.speak("Got it. I've added this task:");
-        this.speak(todolist[todoPointer - 1].toString());
+        this.speak(todolist.get(size-1).toString());
         
-        if (todoPointer == 1) {
+        if (size == 1) {
             this.speak("Now you have 1 task in the list.");
         } else {
-            this.speak("Now you have " + todoPointer + " tasks in the list.");
+            this.speak("Now you have " + size + " tasks in the list.");
+        }
+    }
+
+    private void deleteTask(String strIdx) throws BiboTodoListIndexException {
+        try {
+            int index = Integer.parseInt(strIdx);
+
+            Task task = this.todolist.get(index - 1);
+            this.todolist.remove(index - 1);
+
+            this.speak("Alright! I've removed this task:");
+            this.speak(task.toString());
+
+            int size = this.todolist.size();
+            if (size == 1) {
+                this.speak("Now you have 1 task in the list.");
+            } else {
+                this.speak("Now you have " + size + " tasks in the list.");
+            }
+        } catch (Exception e) {
+            throw new BiboTodoListIndexException(strIdx);
         }
     }
 
     private void markTask(String strIdx) throws BiboTodoListIndexException {
         try {
             int index = Integer.parseInt(strIdx);
-            this.todolist[index - 1].markAsDone();
+
+            Task task = this.todolist.get(index - 1);
+            task.markAsDone();
+
             this.speak("Nice! I've marked this task as done:");
-            this.speak(todolist[index - 1].toString());
+            this.speak(task.toString());
         } catch (Exception e) {
             throw new BiboTodoListIndexException(strIdx);
         }
@@ -129,9 +155,12 @@ public class Bibo {
     private void unmarkTask(String strIdx) throws BiboTodoListIndexException {
         try {
             int index = Integer.parseInt(strIdx);
-            this.todolist[index - 1].markAsUndone();
+
+            Task task = this.todolist.get(index - 1);
+            task.markAsUndone();
+
             this.speak("Alright! I've unmarked this task:");
-            this.speak(todolist[index - 1].toString());
+            this.speak(task.toString());
         } catch (Exception e) {
             throw new BiboTodoListIndexException(strIdx);
         }
@@ -140,8 +169,8 @@ public class Bibo {
     private void showList() {
         this.speak("Here is your to-do list:");
 
-        for (int i = 0; i < todoPointer; i++) {
-            this.speak((i + 1) + ". " + todolist[i]);
+        for (int i = 0; i < this.todolist.size(); i++) {
+            this.speak((i + 1) + ". " + this.todolist.get(i).toString());
         }
     }
 

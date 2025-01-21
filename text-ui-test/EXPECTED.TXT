@@ -6,7 +6,26 @@ What can I do for you?
 ----------- You say: -----------
 
 ---------- Bibo says: ----------
-I'm sorry, I don't understand that command. Try again!
+I don't recognise that command. Try again!
+What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+That's not a valid task description. Try again!
+What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+That's not a valid task description. Try again!
+What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+That's not a valid task description. Try again!
+What's next?
 
 ----------- You say: -----------
 
@@ -35,7 +54,14 @@ What's next?
 ----------- You say: -----------
 
 ---------- Bibo says: ----------
-Task description can't be empty! Try again.
+I can't find a task at that index. Try again!
+What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+I can't find a task at that index. Try again!
+What's next?
 
 ----------- You say: -----------
 
@@ -44,6 +70,7 @@ Here is your to-do list:
 1. [T][ ] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
+What's next?
 
 ----------- You say: -----------
 
@@ -59,12 +86,22 @@ Here is your to-do list:
 1. [T][ ] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][X] project meeting (from: Mon 2pm to: 4pm)
+What's next?
 
 ----------- You say: -----------
 
 ---------- Bibo says: ----------
 Alright! I've unmarked this task:
 [E][ ] project meeting (from: Mon 2pm to: 4pm)
+What's next?
+
+----------- You say: -----------
+
+---------- Bibo says: ----------
+Here is your to-do list:
+1. [T][ ] borrow book
+2. [D][ ] return book (by: Sunday)
+3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
 What's next?
 
 ----------- You say: -----------
