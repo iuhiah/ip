@@ -77,7 +77,12 @@ public class Bibo {
     private void addedTaskSpeak() {
         this.speak("Got it. I've added this task:");
         this.speak(todolist[todoPointer - 1].toString());
-        this.speak("Now you have " + todoPointer + " tasks in the list.");
+        
+        if (todoPointer == 1) {
+            this.speak("Now you have 1 task in the list.");
+        } else {
+            this.speak("Now you have " + todoPointer + " tasks in the list.");
+        }
     }
 
     private void markTask(int index) {
