@@ -4,107 +4,86 @@ Hello! I'm Bibo.
 What can I do for you?
 
 ----------- You say: -----------
+something hehe
 
 ---------- Bibo says: ----------
-I don't recognise that command. Try again!
-What's next?
+BiboUnknownCommandException: something
 
 ----------- You say: -----------
+todo
 
 ---------- Bibo says: ----------
-That's not a valid task description. Try again!
-What's next?
+BiboTaskDescriptionException: Task description cannot be empty.
 
 ----------- You say: -----------
-
----------- Bibo says: ----------
-That's not a valid task description. Try again!
-What's next?
-
------------ You say: -----------
-
----------- Bibo says: ----------
-That's not a valid task description. Try again!
-What's next?
-
------------ You say: -----------
+todo borrow book
 
 ---------- Bibo says: ----------
 Got it. I've added this task:
 [T][ ] borrow book
 Now you have 1 task in the list.
-What's next?
 
 ----------- You say: -----------
+deadline return book /by 
+
+---------- Bibo says: ----------
+BiboTaskDescriptionException: Deadline description format invalid. Use: deadline <task> /by <deadline>
+
+----------- You say: -----------
+deadline return book /by Sunday
 
 ---------- Bibo says: ----------
 Got it. I've added this task:
 [D][ ] return book (by: Sunday)
 Now you have 2 tasks in the list.
-What's next?
 
 ----------- You say: -----------
+event project meeting /from Mon 2pm /to 4pm
 
 ---------- Bibo says: ----------
 Got it. I've added this task:
 [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
-What's next?
 
 ----------- You say: -----------
+list
 
 ---------- Bibo says: ----------
-I can't find a task at that index. Try again!
-What's next?
-
------------ You say: -----------
-
----------- Bibo says: ----------
-I can't find a task at that index. Try again!
-What's next?
-
------------ You say: -----------
-
----------- Bibo says: ----------
-Here is your to-do list:
+Here is your todo list:
 1. [T][ ] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
-What's next?
 
 ----------- You say: -----------
+unmark 100
 
 ---------- Bibo says: ----------
-Nice! I've marked this task as done:
-[E][X] project meeting (from: Mon 2pm to: 4pm)
-What's next?
+BiboTodoListInvalidIndexException: Index out of bounds.
 
 ----------- You say: -----------
+mark a
 
 ---------- Bibo says: ----------
-Here is your to-do list:
-1. [T][ ] borrow book
-2. [D][ ] return book (by: Sunday)
-3. [E][X] project meeting (from: Mon 2pm to: 4pm)
-What's next?
+BiboTodoListInvalidIndexException: That's not a number.
 
 ----------- You say: -----------
+mark 1
 
 ---------- Bibo says: ----------
-Alright! I've unmarked this task:
-[E][ ] project meeting (from: Mon 2pm to: 4pm)
-What's next?
+Alright! I've marked this task as done:
+[T][X] borrow book
 
 ----------- You say: -----------
+list
 
 ---------- Bibo says: ----------
-Here is your to-do list:
-1. [T][ ] borrow book
+Here is your todo list:
+1. [T][X] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
-What's next?
 
 ----------- You say: -----------
+bye
 
 ---------- Bibo says: ----------
 Bye. Hope to see you again soon!

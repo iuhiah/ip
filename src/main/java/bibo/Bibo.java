@@ -41,16 +41,17 @@ public class Bibo {
     /**
      * Executes main loop of Bibo.
      * Continuously reads user input and performs actions until user exits the application.
+     * Format of input is expected to be "<command> <arguments>".
      * 
-     * Commands supported (as defined in ValidCommands):
-     * - BYE: Exits the application with a farewell message.
-     * - LIST: Displays the current list of tasks.
-     * - TODO: Adds a new todo task.
-     * - DEADLINE: Adds a new task with a deadline.
-     * - EVENT: Adds a new event task.
-     * - MARK: Marks a task as completed.
-     * - UNMARK: Unmarks a task.
-     * - DELETE: Deletes a task.
+     * Commands supported:
+     * - bye: Exits the application.
+     * - list: Lists all tasks currently in the todo list.
+     * - todo <description>: Adds a new todo task.
+     * - deadline <description> /by <date>: Adds a new task with a deadline.
+     * - event <description> /from <start> /to <end>: Adds a new event task with a duration.
+     * - mark <index>: Marks a task as done.
+     * - unmark <index>: Marks a task as undone.
+     * - delete <index>: Deletes a task from the todo list.
      * 
      * If an invalid command is entered, an exception is thrown and an error message is displayed.
      * 
