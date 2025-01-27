@@ -18,6 +18,11 @@ bin/
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+text-ui-test/
 
 # .class files
 *.class
+
+# data files
+src/main/data/
+text-ui-test/data/

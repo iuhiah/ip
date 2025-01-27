@@ -6,7 +6,7 @@ import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
 
 /**
- * Represents a parser that parses user inputs.
+ * Represents a parser that parses inputs.
  */
 public class Parser {
     public enum ValidCommands {
