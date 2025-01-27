@@ -1,14 +1,16 @@
+package bibo.exception;
+
 public class BiboUnknownCommandException extends BiboException {
     public BiboUnknownCommandException() {
-        super();
+        super("Unknown command. Please provide a valid command.");
     }
 
     public BiboUnknownCommandException(String message) {
-        super("Unknown command.");
+        super(message);
     }
 
     @Override
     public String toString() {
-        return "I don't recognise that command. " + super.toString();
+        return "BiboUnknownCommandException: " + this.getMessage();
     }
 }

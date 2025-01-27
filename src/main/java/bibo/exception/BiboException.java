@@ -1,14 +1,16 @@
+package bibo.exception;
+
 public abstract class BiboException extends Exception {
     public BiboException() {
-        super();
+        super("An error occurred.");
     }
 
     public BiboException(String message) {
-        super("Bibo: " + message);
+        super(message);
     }
 
     @Override
     public String toString() {
-        return "Try again!";
+        return "BiboException: " + this.getMessage();
     }
 }
