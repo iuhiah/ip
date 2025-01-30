@@ -1,5 +1,5 @@
 something hehe
-todo
+list
 todo borrow book
 deadline return book /by 
 deadline return book /by Sunday
@@ -7,6 +7,6 @@ event project meeting /from Mon 2pm /to 4pm
 list
 unmark 100
 mark a
-mark 1
+delete 1
 list
 bye
