@@ -6,10 +6,10 @@ import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
 
 /**
- * Represents a parser that parses user inputs.
+ * Represents a parser that parses inputs.
  */
 public class Parser {
-    public enum ValidCommands {
+    protected enum ValidCommands {
         BYE, LIST,
         TODO, DEADLINE, EVENT,
         MARK, UNMARK, DELETE
@@ -22,24 +22,25 @@ public class Parser {
      * @return enum value of valid command.
      * @throws BiboUnknownCommandException If command is not valid.
      */
-    public static ValidCommands checkValidCommand(String cmd) throws BiboUnknownCommandException {
+    protected static ValidCommands checkValidCommand(String cmd) throws BiboUnknownCommandException {
         try {
             return ValidCommands.valueOf(cmd.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new BiboUnknownCommandException(cmd);
+            throw new BiboUnknownCommandException();
         }
     }
 
     /**
      * Parses task description from user input.
+     * Parsed data will be used to create a new task.
      * 
      * @param input User input.
      * @return Parsed arguments for task description.
      * @throws BiboTaskDescriptionException If task description is invalid.
      */
-    public static String[] parseTaskDescription(ValidCommands cmd, String input) throws BiboTaskDescriptionException {
+    protected static String[] parseTaskDescription(ValidCommands cmd, String input) throws BiboTaskDescriptionException {
         if (input.isBlank()) {
-            throw new BiboTaskDescriptionException("Task description cannot be empty.");
+            throw new BiboTaskDescriptionException("Task description empty!");
         }
 
         String[] args = new String[] { input };
@@ -47,15 +48,40 @@ public class Parser {
         if (cmd == ValidCommands.DEADLINE) {    
             args = input.split(" /by ");
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
-                throw new BiboTaskDescriptionException("Deadline description format invalid. Use: deadline <task> /by <deadline>");
+                throw new BiboTaskDescriptionException("Deadline description format invalid!");
             }
         } else if (cmd == ValidCommands.EVENT) {
             args = input.split(" /from | /to ");
             if (args.length != 3 || Arrays.stream(args).anyMatch(String::isBlank)) {
-                throw new BiboTaskDescriptionException("Event description format invalid. Use: event <task> /from <start> /to <end>");
+                throw new BiboTaskDescriptionException("Event description format invalid!");
             }
         }
         return args;
+    }
+
+    /**
+     * Parses task description from saved data.
+     * 
+     * @param taskType
+     * @param input
+     * @return
+     * @throws BiboTaskDescriptionException
+     */
+    protected static String parseTaskDescription(char taskType, String input) throws BiboTaskDescriptionException {
+        switch (taskType) {
+        case 'T':
+        break;
+        case 'D':
+            input = input.replace(" (by: ", " /by ")
+                            .replace(")", "");
+            break;
+        case 'E':
+            input = input.replace(" (from: ", " /from ")
+                            .replace(" to: ", " /to ")
+                            .replace(")", "");
+            break;
+        }
+        return input;
     }
 
     /**
@@ -65,12 +91,12 @@ public class Parser {
      * @return Parsed task index.
      * @throws BiboTaskDescriptionException If task index is invalid.
      */
-    public static int parseTaskIndex(String input) throws BiboTodoListIndexException {
+    protected static int parseTaskIndex(String input) throws BiboTodoListIndexException {
         try {
             int index = Integer.parseInt(input);
             return index;
         } catch (NumberFormatException e) {
-            throw new BiboTodoListIndexException("That's not a number.");
+            throw new BiboTodoListIndexException("That's not a number!");
         }
     }
 }
