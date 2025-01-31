@@ -13,7 +13,7 @@ import bibo.exception.BiboTodoListIndexException;
  */
 public class Parser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
-        DateTimeFormatter.ofPattern("[MM-dd-yyyy kkmm][yyyy-MM-dd'T'HH:mm]");
+        DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][yyyy-MM-dd'T'HH:mm]");
 
     protected enum ValidCommands {
         BYE, LIST,
@@ -85,7 +85,6 @@ public class Parser {
                 dateTime[1] = LocalDateTime.parse(args[2], DATE_TIME_FORMATTER);
             }
         } catch (Exception e) {
-            System.out.println(args[1]);
             throw new BiboTaskDescriptionException("Invalid date/time format!");
         }
         return dateTime;

@@ -22,4 +22,4 @@ REM run the program, feed commands from input.txt file and redirect the output t
 java -classpath ..\bin bibo.Bibo < input.txt > ACTUAL.TXT
 
 @REM REM REM compare the output to the expected output
-@REM REM FC ACTUAL.TXT EXPECTED.TXT
+REM FC ACTUAL.TXT EXPECTED.TXT
