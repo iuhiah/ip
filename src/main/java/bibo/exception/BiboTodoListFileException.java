@@ -14,6 +14,6 @@ public class BiboTodoListFileException extends BiboException {
 
     @Override
     public String toString() {
-        return "BiboTodoListFileException: " + this.getMessage();
+        return "BiboTodoListFileException: " + getMessage();
     }    
 }

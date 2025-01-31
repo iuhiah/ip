@@ -15,6 +15,6 @@ public abstract class BiboException extends Exception {
 
     @Override
     public String toString() {
-        return "BiboException: " + this.getMessage();
+        return "BiboException: " + getMessage();
     }
 }

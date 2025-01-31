@@ -14,6 +14,6 @@ public class BiboTodoListIndexException extends BiboException {
 
     @Override
     public String toString() {
-        return "BiboTodoListInvalidIndexException: " + this.getMessage();
+        return "BiboTodoListInvalidIndexException: " + getMessage();
     }
 }

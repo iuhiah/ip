@@ -14,6 +14,6 @@ public class BiboUnknownCommandException extends BiboException {
 
     @Override
     public String toString() {
-        return "BiboUnknownCommandException: " + this.getMessage();
+        return "BiboUnknownCommandException: " + getMessage();
     }
 }

@@ -14,6 +14,6 @@ public class BiboTaskDescriptionException extends BiboException {
 
     @Override
     public String toString() {
-        return "BiboTaskDescriptionException: " + this.getMessage();
+        return "BiboTaskDescriptionException: " + getMessage();
     }
 }
