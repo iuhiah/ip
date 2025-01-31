@@ -13,9 +13,16 @@ import bibo.exception.BiboTodoListFileException;
 import bibo.exception.BiboUnknownCommandException;
 import bibo.task.Task;
 
+/**
+ * Represents a file handler that handles file operations.
+ */
 public class FileHandler {
     private String dataDir = "data";
     private String fileName = "todo.txt";
+
+    // define file separator depending on OS
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
 
     /*
      * Checks if todo list file exists. If not, creates one.
@@ -27,7 +34,7 @@ public class FileHandler {
             if (!Files.exists(Paths.get("data"))) {
                 System.out.println("Saved data not found. Creating new file to store data...");
                 Files.createDirectory(Paths.get(this.dataDir));
-                Files.createFile(Paths.get(this.dataDir + "/" + this.fileName));
+                Files.createFile(Paths.get(this.dataDir + FILE_SEPARATOR + this.fileName));
             }
         } catch (IOException e) {
             throw new BiboTodoListFileException("Error creating todo list file.");
@@ -47,18 +54,13 @@ public class FileHandler {
         checkTodoListFile();
         int totalTasks = 0;
         
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(this.dataDir + "/" + this.fileName))) {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(this.dataDir + FILE_SEPARATOR + this.fileName))) {
             String taskData;
             while ((taskData = fileReader.readLine()) != null) {
                 try {
-                    bibo.addTaskFromFile(taskData.charAt(1),
-                                         taskData.substring(7),
-                                         taskData.charAt(4) == 'X');
-                } catch (BiboTaskDescriptionException e) {
-                    System.out.println("Error parsing task data from file. Skipping task:");
-                    System.out.println("\t" + taskData);
-                } catch (BiboUnknownCommandException e) {
-                    System.out.println("Error parsing task type from file. Skipping task:");
+                    bibo.addTaskFromFile(taskData);
+                } catch (BiboTaskDescriptionException | BiboUnknownCommandException e) {
+                    System.out.println(e.getMessage());
                     System.out.println("\t" + taskData);
                 } finally {
                     totalTasks++;
@@ -71,18 +73,26 @@ public class FileHandler {
         initialFileUpdate(bibo, totalTasks);
     }
 
+    /**
+     * Provides progress update on reading from file.
+     * Separates corrupted and non-corrupted data.
+     * 
+     * @param bibo Bibo instance to save todo list from.
+     * @param totalTasks Total number of tasks in file.
+     * @throws BiboTodoListFileException if an error occurs during file handling.
+     */
     private void initialFileUpdate(Bibo bibo, int totalTasks) throws BiboTodoListFileException {
         int loadedTasks = bibo.todoList.size();
         System.out.println("Successfully loaded " + loadedTasks + " of " + totalTasks + " tasks.");
 
         if (loadedTasks < totalTasks) {
             System.out.println("Some data was corrupted, corrupted data file renamed to:");
-            System.out.println("\t" + this.dataDir + "/" + this.fileName + ".corrupted");
+            System.out.println("\t" + this.dataDir + FILE_SEPARATOR + this.fileName + ".corrupted");
 
             try {
-                File corruptedFile = new File(this.dataDir + "/" + this.fileName);
-                corruptedFile.renameTo(new File(this.dataDir + "/" + this.fileName + ".corrupted"));
-            } catch (Exception e) {
+                File corruptedFile = new File(this.dataDir + FILE_SEPARATOR + this.fileName);
+                corruptedFile.renameTo(new File(this.dataDir + FILE_SEPARATOR + this.fileName + ".corrupted"));
+            } catch (NullPointerException | SecurityException e) {
                 throw new BiboTodoListFileException("Error renaming corrupted file.");
             }
 
@@ -103,9 +113,9 @@ public class FileHandler {
      * @throws BiboTodoListFileException if an error occurs while saving the file.
      */
      protected void saveTodoList(Bibo bibo) throws BiboTodoListFileException {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.dataDir + "/" + this.fileName))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(this.dataDir + FILE_SEPARATOR + this.fileName))) {
             for (Task task : bibo.todoList) {
-                writer.write(task.toString());
+                writer.write(task.toFileString());
                 writer.newLine();
             }
             writer.flush();
