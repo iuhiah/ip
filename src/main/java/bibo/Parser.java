@@ -1,6 +1,9 @@
 package bibo;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+
 import bibo.exception.BiboUnknownCommandException;
 import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
@@ -9,6 +12,9 @@ import bibo.exception.BiboTodoListIndexException;
  * Represents a parser that parses inputs.
  */
 public class Parser {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+        DateTimeFormatter.ofPattern("[MM-dd-yyyy kkmm][yyyy-MM-dd'T'HH:mm]");
+
     protected enum ValidCommands {
         BYE, LIST,
         TODO, DEADLINE, EVENT,
@@ -50,6 +56,7 @@ public class Parser {
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Deadline description format invalid!");
             }
+
         } else if (cmd == ValidCommands.EVENT) {
             args = input.split(" /from | /to ");
             if (args.length != 3 || Arrays.stream(args).anyMatch(String::isBlank)) {
@@ -57,6 +64,31 @@ public class Parser {
             }
         }
         return args;
+    }
+
+    /**
+     * Parses task date time from user input.
+     * 
+     * @param args Date/time arguments.
+     * @return Parsed date time.
+     * @throws BiboTaskDescriptionException If date time format is invalid.
+     */
+    protected static LocalDateTime[] parseTaskDateTime(String[] args) throws BiboTaskDescriptionException {
+        LocalDateTime[] dateTime = new LocalDateTime[2];
+
+        // todo: add support for more date time formats
+        try {
+            if (args.length == 2) {
+                dateTime[0] = LocalDateTime.parse(args[1], DATE_TIME_FORMATTER);
+            } else {
+                dateTime[0] = LocalDateTime.parse(args[1], DATE_TIME_FORMATTER);
+                dateTime[1] = LocalDateTime.parse(args[2], DATE_TIME_FORMATTER);
+            }
+        } catch (Exception e) {
+            System.out.println(args[1]);
+            throw new BiboTaskDescriptionException("Invalid date/time format!");
+        }
+        return dateTime;
     }
 
     /**
@@ -68,17 +100,23 @@ public class Parser {
      * @throws BiboTaskDescriptionException
      */
     protected static String parseTaskDescription(char taskType, String input) throws BiboTaskDescriptionException {
+        String[] parsedInput;
         switch (taskType) {
         case 'T':
-        break;
+            break;
         case 'D':
-            input = input.replace(" (by: ", " /by ")
-                            .replace(")", "");
+            parsedInput = input.split(" \\| ");
+            if (parsedInput.length != 2) {
+                throw new BiboTaskDescriptionException("Invalid deadline task data!");
+            }
+            input = parsedInput[0] + " /by " + parsedInput[1];
             break;
         case 'E':
-            input = input.replace(" (from: ", " /from ")
-                            .replace(" to: ", " /to ")
-                            .replace(")", "");
+            parsedInput = input.split(" \\| ");
+            if (parsedInput.length != 3) {
+                throw new BiboTaskDescriptionException("Invalid event task data!");
+            }
+            input = parsedInput[0] + " /from " + parsedInput[1] + " /to " + parsedInput[2];
             break;
         }
         return input;

@@ -1,17 +1,32 @@
 package bibo.task;
 
-public class Event extends Task {
-    protected String start;
-    protected String end;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    public Event(String description, String start, String end) {
+/**
+ * Represents an event.
+ */
+public class Event extends Task {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER
+        = DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
+    private LocalDateTime start;
+    private LocalDateTime end;
+
+    public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
         this.start = start;
         this.end = end;
     }
 
     @Override
+    public String toFileString() {
+        return "E | " + super.toFileString() + " | " + start + " | " + end;
+    }
+
+    @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + start + " to: " + end + ")";
+        return "[E]" + super.toString()
+            + " (from: " + start.format(DATE_TIME_FORMATTER)
+            + " to: " + end.format(DATE_TIME_FORMATTER) + ")";
     }
 }

@@ -2,6 +2,7 @@ package bibo;
 
 import java.util.Scanner;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import bibo.Parser.ValidCommands;
@@ -15,6 +16,9 @@ import bibo.task.Todo;
 import bibo.task.Deadline;
 import bibo.task.Event;
 
+/**
+ * Represents a personal assistant that helps manage tasks.
+ */
 public class Bibo {
     private Scanner scanner;
     protected ArrayList<Task> todoList;
@@ -25,20 +29,13 @@ public class Bibo {
         System.out.println(message);
     }
     
-    /**
-     * Reads user input and determines if input is redirected.
-     * If input is redirected, echo input to console for logging purposes.
-     * 
-     * @return User input.
-     * @throws IOException if an error occurs while reading input.
-     */
     private String getCommand() throws IOException {
         System.out.println("\n----------- You say: -----------");
         String input = this.scanner.nextLine();
 
-        // for logging purposes
-        // if input is redirected
+        // for logging purposes, if input is redirected
         if (System.console() == null) {
+            // echo input to console
             System.out.println(input);
         }
             
@@ -116,9 +113,19 @@ public class Bibo {
         this.speak(message.toString());
     }
 
-    protected Task addTaskFromFile(char taskType, String input, boolean done) throws BiboTaskDescriptionException, BiboUnknownCommandException {
+    /**
+     * Adds task to the todo list from file data.
+     * 
+     * @param taskData Task data read from file.
+     * @return Task added to todo list.
+     * @throws BiboTaskDescriptionException if task description is invalid.
+     * @throws BiboUnknownCommandException if task type is unknown.
+     */
+    protected Task addTaskFromFile(String taskData) throws BiboTaskDescriptionException, BiboUnknownCommandException {
         try {
-            String taskDescription = Parser.parseTaskDescription(taskType, input);
+            String[] taskDataArr = taskData.split(" \\| ", 3);
+            char taskType = taskDataArr[0].charAt(0);
+            String taskDescription = Parser.parseTaskDescription(taskType, taskDataArr[2]);
 
             ValidCommands cmd;
             switch (taskType) {
@@ -132,11 +139,11 @@ public class Bibo {
                 cmd = ValidCommands.EVENT;
                 break;
             default:
-                throw new BiboUnknownCommandException();
+                throw new BiboUnknownCommandException("Unknown task type in file data!");
             }
 
             Task task = this.addTask(cmd, taskDescription);
-            if (done) {
+            if (taskDataArr[1].equals("1")) {
                 task.markAsDone();
             }
             return task;
@@ -201,8 +208,9 @@ public class Bibo {
         try {
             String[] parsedDescription =
                 Parser.parseTaskDescription(Parser.ValidCommands.DEADLINE, description);
-            Task task = new Deadline(parsedDescription[0],
-                                     parsedDescription[1]);
+            LocalDateTime[] dateTime =
+                Parser.parseTaskDateTime(parsedDescription);
+            Task task = new Deadline(parsedDescription[0], dateTime[0]);
             this.todoList.add(task);
             return task;
         } catch (BiboTaskDescriptionException e) {
@@ -214,9 +222,11 @@ public class Bibo {
         try {
             String[] parsedDescription =
                 Parser.parseTaskDescription(Parser.ValidCommands.EVENT, description);
+            LocalDateTime[] dateTime =
+                Parser.parseTaskDateTime(parsedDescription);
             Task task = new Event(parsedDescription[0],
-                                  parsedDescription[1],
-                                  parsedDescription[2]);
+                                  dateTime[0],
+                                  dateTime[1]);
             this.todoList.add(task);
             return task;
         } catch (BiboTaskDescriptionException e) {
@@ -278,7 +288,7 @@ public class Bibo {
     }
 
     /**
-     * Update todo list data by reading file.
+     * Updates todo list data by reading from file.
      * 
      * @throws BiboException if an error occurs while updating todo list.
      */
@@ -289,7 +299,7 @@ public class Bibo {
     }
 
     /**
-     * Initialise Bibo and start conversation.
+     * Initialises new Bibo instance and starts conversation.
      * 
      * @param args Command line arguments.
      * @throws BiboException if an error occurs while processing commands.
