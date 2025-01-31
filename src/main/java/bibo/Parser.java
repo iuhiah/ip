@@ -13,9 +13,9 @@ import bibo.exception.BiboTodoListIndexException;
  */
 public class Parser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
-        DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][yyyy-MM-dd'T'HH:mm]");
+        DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][yyyy-MM-dd'T'kk:mm]");
 
-    protected enum ValidCommands {
+    protected enum Commands {
         BYE, LIST,
         TODO, DEADLINE, EVENT,
         MARK, UNMARK, DELETE
@@ -28,11 +28,31 @@ public class Parser {
      * @return enum value of valid command.
      * @throws BiboUnknownCommandException If command is not valid.
      */
-    protected static ValidCommands checkValidCommand(String cmd) throws BiboUnknownCommandException {
+    protected static Commands checkValidCommand(String cmd) throws BiboUnknownCommandException {
         try {
-            return ValidCommands.valueOf(cmd.toUpperCase());
+            return Commands.valueOf(cmd.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BiboUnknownCommandException();
+        }
+    }
+
+    /**
+     * Gets task type from user input (file data).
+     * 
+     * @param cmd User input.
+     * @return Task type.
+     * @throws BiboUnknownCommandException If task type is invalid.
+     */
+    protected static Commands getTaskType(char cmd) throws BiboUnknownCommandException {
+        switch (cmd) {
+        case 'T':
+            return Commands.TODO;
+        case 'D':
+            return Commands.DEADLINE;
+        case 'E':
+            return Commands.EVENT;
+        default:
+            throw new BiboUnknownCommandException("Unknown task type in file data!");
         }
     }
 
@@ -44,20 +64,20 @@ public class Parser {
      * @return Parsed arguments for task description.
      * @throws BiboTaskDescriptionException If task description is invalid.
      */
-    protected static String[] parseTaskDescription(ValidCommands cmd, String input) throws BiboTaskDescriptionException {
+    protected static String[] parseTaskDescription(Commands cmd, String input) throws BiboTaskDescriptionException {
         if (input.isBlank()) {
             throw new BiboTaskDescriptionException("Task description empty!");
         }
 
         String[] args = new String[] { input };
 
-        if (cmd == ValidCommands.DEADLINE) {    
+        if (cmd == Commands.DEADLINE) {    
             args = input.split(" /by ");
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Deadline description format invalid!");
             }
 
-        } else if (cmd == ValidCommands.EVENT) {
+        } else if (cmd == Commands.EVENT) {
             args = input.split(" /from | /to ");
             if (args.length != 3 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Event description format invalid!");
@@ -88,37 +108,6 @@ public class Parser {
             throw new BiboTaskDescriptionException("Invalid date/time format!");
         }
         return dateTime;
-    }
-
-    /**
-     * Parses task description from saved data.
-     * 
-     * @param taskType
-     * @param input
-     * @return
-     * @throws BiboTaskDescriptionException
-     */
-    protected static String parseTaskDescription(char taskType, String input) throws BiboTaskDescriptionException {
-        String[] parsedInput;
-        switch (taskType) {
-        case 'T':
-            break;
-        case 'D':
-            parsedInput = input.split(" \\| ");
-            if (parsedInput.length != 2) {
-                throw new BiboTaskDescriptionException("Invalid deadline task data!");
-            }
-            input = parsedInput[0] + " /by " + parsedInput[1];
-            break;
-        case 'E':
-            parsedInput = input.split(" \\| ");
-            if (parsedInput.length != 3) {
-                throw new BiboTaskDescriptionException("Invalid event task data!");
-            }
-            input = parsedInput[0] + " /from " + parsedInput[1] + " /to " + parsedInput[2];
-            break;
-        }
-        return input;
     }
 
     /**

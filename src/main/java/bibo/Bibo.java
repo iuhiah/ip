@@ -1,46 +1,19 @@
 package bibo;
 
-import java.util.Scanner;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
-import bibo.Parser.ValidCommands;
 import bibo.exception.BiboException;
 import bibo.exception.BiboTodoListFileException;
-import bibo.exception.BiboTaskDescriptionException;
-import bibo.exception.BiboTodoListIndexException;
-import bibo.exception.BiboUnknownCommandException;
 import bibo.task.Task;
-import bibo.task.Todo;
-import bibo.task.Deadline;
-import bibo.task.Event;
 
 /**
  * Represents a personal assistant that helps manage tasks.
  */
 public class Bibo {
-    private Scanner scanner;
-    protected ArrayList<Task> todoList;
-    private FileHandler fileHandler;
+    private Ui ui;
+    private Storage storage;
+    protected TaskList todoList;
 
-    private void speak(String message) {
-        System.out.println("\n---------- Bibo says: ----------");
-        System.out.println(message);
-    }
-    
-    private String getCommand() throws IOException {
-        System.out.println("\n----------- You say: -----------");
-        String input = this.scanner.nextLine();
-
-        // for logging purposes, if input is redirected
-        if (System.console() == null) {
-            // echo input to console
-            System.out.println(input);
-        }
-            
-        return input;
-    }
 
     /**
      * Executes main loop of Bibo.
@@ -63,228 +36,44 @@ public class Bibo {
      */
     private void run() {
         try {
-            String input = this.getCommand();
+            String input = ui.getCommand();
 
             String strCmd = input.split(" ")[0];
-            Parser.ValidCommands cmd = Parser.checkValidCommand(strCmd);
+            Parser.Commands cmd = Parser.checkValidCommand(strCmd);
             String args = input.replace(strCmd, "").trim();
+
+            Task task = null;
 
             switch (cmd) {
             case BYE:
-                this.speak("Bye. Hope to see you again soon!");
+                ui.close();
                 return;
             case LIST:
-                this.showList();
+                ui.speak(todoList.toString());
                 break;
             case TODO:
             case DEADLINE:
             case EVENT:
-                Task task = this.addTask(cmd, args);
-                if (task != null) {
-                    this.addedTaskSpeak(task);
-                    this.fileHandler.saveTodoList(this);
-                }
+                task = todoList.addTask(cmd, args);
                 break;
             case MARK:
             case UNMARK:
             case DELETE:
-                this.changeTaskStatus(cmd, args);
-                this.fileHandler.saveTodoList(this);
+                task = todoList.changeTaskStatus(cmd, args);
                 break;
+            }
+
+            if (task != null) {
+                ui.speak(todoList.updateTaskMessage(cmd, task));
+                storage.saveTodoList(this);
             }
         } catch (BiboException e) {
-            this.speak(e.toString());
+            ui.speak(e.toString());
         } catch (IOException e) {
-            this.speak("Error reading input.");
+            ui.speak("Error reading input.");
         }
-        this.run();
-    }
-
-    private void showList() {
-        StringBuilder message = new StringBuilder();
-        message.append("Here is your todo list:");
-
-        for (int i = 0; i < this.todoList.size(); i++) {
-            message.append(
-                "\n" +(i + 1) + ". "
-                + this.todoList.get(i).toString()
-            );
-        }
-        this.speak(message.toString());
-    }
-
-    /**
-     * Adds task to the todo list from file data.
-     * 
-     * @param taskData Task data read from file.
-     * @return Task added to todo list.
-     * @throws BiboTaskDescriptionException if task description is invalid.
-     * @throws BiboUnknownCommandException if task type is unknown.
-     */
-    protected Task addTaskFromFile(String taskData) throws BiboTaskDescriptionException, BiboUnknownCommandException {
-        try {
-            String[] taskDataArr = taskData.split(" \\| ", 3);
-            char taskType = taskDataArr[0].charAt(0);
-            String taskDescription = Parser.parseTaskDescription(taskType, taskDataArr[2]);
-
-            ValidCommands cmd;
-            switch (taskType) {
-            case 'T':
-                cmd = ValidCommands.TODO;
-                break;
-            case 'D':
-                cmd = ValidCommands.DEADLINE;
-                break;
-            case 'E':
-                cmd = ValidCommands.EVENT;
-                break;
-            default:
-                throw new BiboUnknownCommandException("Unknown task type in file data!");
-            }
-
-            Task task = this.addTask(cmd, taskDescription);
-            if (taskDataArr[1].equals("1")) {
-                task.markAsDone();
-            }
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e; 
-        } catch (BiboUnknownCommandException e) {
-            throw e;
-        }
-    }
-
-    // suppress switch case warning as input has already been validated
-    @SuppressWarnings("incomplete-switch")
-    private Task addTask(Parser.ValidCommands cmd, String args) throws BiboTaskDescriptionException {
-        Task task = null;
-        try {
-            switch (cmd) {
-            case TODO:
-                task = this.addTodo(args);
-                break;
-            case DEADLINE:
-                task = this.addDeadline(args);
-                break;
-            case EVENT:
-                task = this.addEvent(args);
-                break;
-            }
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-        return task;
-    }
-
-    private void addedTaskSpeak(Task task) {
-        int size = this.todoList.size();
         
-        StringBuilder message = new StringBuilder();
-        message.append("Got it. I've added this task:\n");
-        message.append(task.toString());
-        this.taskSpeak(message, size);
-    }
-
-    private void taskSpeak(StringBuilder message, int size) {
-        message.append("\nNow you have " + size);
-        message.append(size == 1 ? " task" : " tasks");
-        message.append(" in the list.");
-        this.speak(message.toString());
-    }
-
-    private Task addTodo(String description) throws BiboTaskDescriptionException {
-        try {
-            String parsedDescription =
-                Parser.parseTaskDescription(Parser.ValidCommands.TODO, description)[0];
-            Task task = new Todo(parsedDescription);
-            this.todoList.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
-
-    private Task addDeadline(String description) throws BiboTaskDescriptionException {
-        try {
-            String[] parsedDescription =
-                Parser.parseTaskDescription(Parser.ValidCommands.DEADLINE, description);
-            LocalDateTime[] dateTime =
-                Parser.parseTaskDateTime(parsedDescription);
-            Task task = new Deadline(parsedDescription[0], dateTime[0]);
-            this.todoList.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
-
-    private Task addEvent(String description) throws BiboTaskDescriptionException {
-        try {
-            String[] parsedDescription =
-                Parser.parseTaskDescription(Parser.ValidCommands.EVENT, description);
-            LocalDateTime[] dateTime =
-                Parser.parseTaskDateTime(parsedDescription);
-            Task task = new Event(parsedDescription[0],
-                                  dateTime[0],
-                                  dateTime[1]);
-            this.todoList.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
-
-    // suppress switch case warning as input has already been validated
-    @SuppressWarnings("incomplete-switch")
-    private void changeTaskStatus(Parser.ValidCommands cmd, String args) throws BiboTodoListIndexException, BiboTodoListFileException {
-        try {
-            int index = Parser.parseTaskIndex(args);
-            Task task = this.todoList.get(index - 1);
-            
-            switch (cmd) {
-            case MARK:
-                this.markTask(task);
-                break;
-            case UNMARK:
-                this.unmarkTask(task);
-                break;
-            case DELETE:
-                this.deleteTask(task);
-                break;
-            }
-            this.fileHandler.saveTodoList(this);
-        } catch (IndexOutOfBoundsException e) {
-            throw new BiboTodoListIndexException("Task index out of range!");
-        } catch (BiboTodoListFileException e) {
-            throw e;
-        }
-    }
-
-    private void markTask(Task task) { 
-        task.markAsDone();
-        
-        StringBuilder message = new StringBuilder();
-        message.append("Alright! I've marked this task as done:\n");
-        message.append(task.toString());
-        this.speak(message.toString());
-    }
-
-    private void unmarkTask(Task task) {
-        task.markAsUndone();
-        
-        StringBuilder message = new StringBuilder();
-        message.append("Alright! I've marked this task as undone:\n");
-        message.append(task.toString());
-        this.speak(message.toString());
-    }
-
-    private void deleteTask(Task task) {
-        this.todoList.remove(task);
-        
-        StringBuilder message = new StringBuilder();
-        message.append("Alright! I've deleted this task:\n");
-        message.append(task.toString());
-        this.taskSpeak(message, this.todoList.size());
+        run();
     }
 
     /**
@@ -293,9 +82,17 @@ public class Bibo {
      * @throws BiboException if an error occurs while updating todo list.
      */
     public Bibo() throws BiboException {
-        this.todoList = new ArrayList<Task>();
-        this.scanner = new Scanner(System.in);
-        this.fileHandler = new FileHandler();
+        this.ui = new Ui();
+        this.todoList = new TaskList();
+        this.storage = new Storage();
+
+        try {
+            storage.loadTodoList(this);
+        } catch (BiboTodoListFileException e) {
+            throw e;
+        }
+
+        ui.open();
     }
 
     /**
@@ -306,12 +103,6 @@ public class Bibo {
      */
     public static void main(String[] args) throws BiboException {
         Bibo bibo = new Bibo();
-        try {
-            bibo.fileHandler.loadTodoList(bibo);
-        } catch (BiboTodoListFileException e) {
-            throw e;
-        }
-        bibo.speak("Hello! I'm Bibo.\nWhat can I do for you?");
         bibo.run();
     }
 }

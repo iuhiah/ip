@@ -20,7 +20,7 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        return "E | " + super.toFileString() + " | " + start + " | " + end;
+        return "E" + super.toFileString() + " /from " + start + " /to " + end;
     }
 
     @Override

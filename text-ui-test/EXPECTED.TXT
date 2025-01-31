@@ -2,8 +2,7 @@ Loading todo list...
 Successfully loaded 0 of 0 tasks.
 
 ---------- Bibo says: ----------
-Hello! I'm Bibo.
-What can I do for you?
+Hello! I'm Bibo. What can I do for you today?
 
 ----------- You say: -----------
 list
@@ -17,7 +16,7 @@ todo borrow book
 ---------- Bibo says: ----------
 Got it. I've added this task:
 [T][ ] borrow book
-Now you have 1 task in the list.
+Now you have 1 tasks in the list.
 
 ----------- You say: -----------
 deadline return book /by 12-10-2021
