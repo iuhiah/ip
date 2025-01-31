@@ -7,11 +7,16 @@ import java.time.format.DateTimeFormatter;
  * Represents a task.
  */
 public class Task {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER
-        = DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+        DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
     private String description;
     private boolean isDone;
 
+    /**
+     * Creates a new task.
+     *
+     * @param description Description of task.
+     */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
@@ -27,7 +32,7 @@ public class Task {
 
     /**
      * Formats datetime object to a string.
-     * 
+     *
      * @param dateTime
      * @return Formatted datetime string.
      */
@@ -37,7 +42,7 @@ public class Task {
 
     /**
      * Returns the description of the task in file format.
-     * 
+     *
      * @return Task description in file format.
      */
     public String toFileString() {

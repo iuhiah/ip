@@ -3,13 +3,13 @@ package bibo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import bibo.task.Task;
-import bibo.task.Todo;
 import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
 import bibo.exception.BiboUnknownCommandException;
 import bibo.task.Deadline;
 import bibo.task.Event;
+import bibo.task.Task;
+import bibo.task.Todo;
 
 /**
  * Represents a list of tasks.
@@ -23,7 +23,7 @@ public class TaskList {
 
     /**
      * Gets size of task list.
-     * 
+     *
      * @return Size of task list.
      */
     public int getTaskListSize() {
@@ -32,15 +32,14 @@ public class TaskList {
 
     /**
      * Constructs an update message after performing a task action.
-     * 
+     *
      * @param cmd
      * @param task
      * @return Update message.
      */
-    @SuppressWarnings("incomplete-switch")
     protected String updateTaskMessage(Parser.Commands cmd, Task task) {
         StringBuilder message = new StringBuilder();
-        
+
         switch (cmd) {
         case TODO:
         case DEADLINE:
@@ -56,6 +55,9 @@ public class TaskList {
         case DELETE:
             message.append("Alright! I've deleted this task:\n");
             break;
+        default:
+            // should not reach here
+            break;
         }
 
         message.append(task.toString());
@@ -68,7 +70,7 @@ public class TaskList {
 
     /**
      * Adds task to the todo list from file data.
-     * 
+     *
      * @param taskData Task data read from file.
      * @return Task added to todo list.
      * @throws BiboTaskDescriptionException if task description is invalid.
@@ -85,14 +87,12 @@ public class TaskList {
             }
             return task;
         } catch (BiboTaskDescriptionException e) {
-            throw e; 
+            throw e;
         } catch (BiboUnknownCommandException e) {
             throw e;
         }
     }
 
-    // suppress switch case warning as input has already been validated
-    @SuppressWarnings("incomplete-switch")
     protected Task addTask(Parser.Commands cmd, String args) throws BiboTaskDescriptionException {
         Task task = null;
         try {
@@ -105,6 +105,9 @@ public class TaskList {
                 break;
             case EVENT:
                 task = addEvent(args);
+                break;
+            default:
+                // should not reach here
                 break;
             }
         } catch (BiboTaskDescriptionException e) {
@@ -155,13 +158,11 @@ public class TaskList {
         }
     }
 
-    // suppress switch case warning as input has already been validated
-    @SuppressWarnings("incomplete-switch")
     protected Task changeTaskStatus(Parser.Commands cmd, String args) throws BiboTodoListIndexException {
         try {
             int index = Parser.parseTaskIndex(args);
             Task task = tasks.get(index - 1);
-            
+
             switch (cmd) {
             case MARK:
                 markTask(task);
@@ -172,6 +173,9 @@ public class TaskList {
             case DELETE:
                 deleteTask(task);
                 break;
+            default:
+                // should not reach here
+                break;
             }
 
             return task;
@@ -180,7 +184,7 @@ public class TaskList {
         }
     }
 
-    private void markTask(Task task) { 
+    private void markTask(Task task) {
         task.markAsDone();
     }
 
@@ -194,7 +198,7 @@ public class TaskList {
 
     /**
      * Converts task list to string for saving to file.
-     * 
+     *
      * @return Task list in string format.
      */
     protected String toFileString() {
@@ -212,7 +216,7 @@ public class TaskList {
 
         for (int i = 0; i < tasks.size(); i++) {
             message.append(
-                "\n" +(i + 1) + ". "
+                "\n" + (i + 1) + ". "
                 + tasks.get(i).toString()
             );
         }

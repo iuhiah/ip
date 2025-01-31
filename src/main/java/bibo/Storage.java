@@ -16,43 +16,42 @@ import bibo.exception.BiboUnknownCommandException;
  * Represents a file handler that handles file operations.
  */
 public class Storage {
-    private String dataDir = "data";
-    private String fileName = "todo.txt";
-
     // define file separator depending on OS
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+    private String dataDir = "data";
+    private String fileName = "todo.txt";
 
     /*
      * Checks if todo list file exists. If not, creates one.
-     * 
+     *
      * @throws BiboTodoListFileException if an error occurs while creating the file.
      */
     private void checkTodoListFile() throws BiboTodoListFileException {
         try {
             if (!Files.exists(Paths.get("data"))) {
                 System.out.println("Saved data not found. Creating new file to store data...");
-                Files.createDirectory(Paths.get (dataDir));
-                Files.createFile(Paths.get (dataDir + FILE_SEPARATOR + fileName));
+                Files.createDirectory(Paths.get(dataDir));
+                Files.createFile(Paths.get(dataDir + FILE_SEPARATOR + fileName));
             }
         } catch (IOException e) {
             throw new BiboTodoListFileException("Error creating todo list file.");
         }
     }
-    
+
     /**
      * Updates Bibo's todo list with data from file.
      * If file is corrupted, renames file to .corrupted and
      * creates a new file with non-corrupted data.
-     * 
+     *
      * @param bibo Bibo instance to load todo list into.
      * @throws BiboTodoListFileException if file data is corrupted.
      */
-     protected void loadTodoList(Bibo bibo) throws BiboTodoListFileException {
+    protected void loadTodoList(Bibo bibo) throws BiboTodoListFileException {
         System.out.println("Loading todo list...");
         checkTodoListFile();
         int totalTasks = 0;
-        
+
         try (BufferedReader fileReader = new BufferedReader(new FileReader(dataDir + FILE_SEPARATOR + fileName))) {
             String taskData;
             while ((taskData = fileReader.readLine()) != null) {
@@ -75,7 +74,7 @@ public class Storage {
     /**
      * Provides progress update on reading from file.
      * Separates corrupted and non-corrupted data.
-     * 
+     *
      * @param bibo Bibo instance to save todo list from.
      * @param totalTasks Total number of tasks in file.
      * @throws BiboTodoListFileException if an error occurs during file handling.
@@ -89,15 +88,15 @@ public class Storage {
             System.out.println("\t" + dataDir + FILE_SEPARATOR + fileName + ".corrupted");
 
             try {
-                File corruptedFile = new File (dataDir + FILE_SEPARATOR + fileName);
-                corruptedFile.renameTo(new File (dataDir + FILE_SEPARATOR + fileName + ".corrupted"));
+                File corruptedFile = new File(dataDir + FILE_SEPARATOR + fileName);
+                corruptedFile.renameTo(new File(dataDir + FILE_SEPARATOR + fileName + ".corrupted"));
             } catch (NullPointerException | SecurityException e) {
                 throw new BiboTodoListFileException("Error renaming corrupted file.");
             }
 
             System.out.println("Non-corrupted data will be saved to original file name.");
         }
-        
+
         try {
             saveTodoList(bibo);
         } catch (BiboTodoListFileException e) {
@@ -107,12 +106,12 @@ public class Storage {
 
     /**
      * Saves current todo list to file.
-     * 
+     *
      * @param bibo Bibo instance to save todo list from.
      * @throws BiboTodoListFileException if an error occurs while saving the file.
      */
-     protected void saveTodoList(Bibo bibo) throws BiboTodoListFileException {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get (dataDir + FILE_SEPARATOR + fileName))) {
+    protected void saveTodoList(Bibo bibo) throws BiboTodoListFileException {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(dataDir + FILE_SEPARATOR + fileName))) {
             writer.write(bibo.todoList.toFileString());
         } catch (IOException e) {
             throw new BiboTodoListFileException("Error saving todo list file.");

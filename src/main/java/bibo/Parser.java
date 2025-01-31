@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import bibo.exception.BiboUnknownCommandException;
 import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
+import bibo.exception.BiboUnknownCommandException;
 
 /**
  * Represents a parser that parses inputs.
@@ -23,7 +23,7 @@ public class Parser {
 
     /**
      * Checks if given command is a valid command.
-     * 
+     *
      * @param cmd Command to check.
      * @return enum value of valid command.
      * @throws BiboUnknownCommandException If command is not valid.
@@ -38,7 +38,7 @@ public class Parser {
 
     /**
      * Gets task type from user input (file data).
-     * 
+     *
      * @param cmd User input.
      * @return Task type.
      * @throws BiboUnknownCommandException If task type is invalid.
@@ -59,7 +59,7 @@ public class Parser {
     /**
      * Parses task description from user input.
      * Parsed data will be used to create a new task.
-     * 
+     *
      * @param input User input.
      * @return Parsed arguments for task description.
      * @throws BiboTaskDescriptionException If task description is invalid.
@@ -71,7 +71,7 @@ public class Parser {
 
         String[] args = new String[] { input };
 
-        if (cmd == Commands.DEADLINE) {    
+        if (cmd == Commands.DEADLINE) {
             args = input.split(" /by ");
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Deadline description format invalid!");
@@ -88,7 +88,7 @@ public class Parser {
 
     /**
      * Parses task date time from user input.
-     * 
+     *
      * @param args Date/time arguments.
      * @return Parsed date time.
      * @throws BiboTaskDescriptionException If date time format is invalid.
@@ -112,7 +112,7 @@ public class Parser {
 
     /**
      * Parses todo list index from user input.
-     * 
+     *
      * @param input User input.
      * @return Parsed task index.
      * @throws BiboTaskDescriptionException If task index is invalid.

@@ -10,28 +10,46 @@ import bibo.task.Task;
  * Represents a personal assistant that helps manage tasks.
  */
 public class Bibo {
-    private Ui ui;
-    private Storage storage;
     protected TaskList todoList;
+    private Storage storage;
+    private Ui ui;
 
+    /**
+     * Initialises new Bibo instance and updates todo list from storage.
+     *
+     * @throws BiboException if an error occurs while updating todo list.
+     */
+    public Bibo() throws BiboException {
+        this.ui = new Ui();
+        this.todoList = new TaskList();
+        this.storage = new Storage();
+
+        try {
+            storage.loadTodoList(this);
+        } catch (BiboTodoListFileException e) {
+            throw e;
+        }
+
+        ui.open();
+    }
 
     /**
      * Executes main loop of Bibo.
      * Continuously reads user input and performs actions until user exits the application.
-     * Format of input is expected to be "<command> <arguments>".
-     * 
+     * Format of input is expected to be "&lt;command&gt; &lt;arguments&gt;".
+     *
      * Commands supported:
      * - bye: Exits the application.
      * - list: Lists all tasks currently in the todo list.
-     * - todo <description>: Adds a new todo task.
-     * - deadline <description> /by <date>: Adds a new task with a deadline.
-     * - event <description> /from <start> /to <end>: Adds a new event task with a duration.
-     * - mark <index>: Marks a task as done.
-     * - unmark <index>: Marks a task as undone.
-     * - delete <index>: Deletes a task from the todo list.
-     * 
+     * - todo &lt;description&gt;: Adds a new todo task.
+     * - deadline &lt;description&gt; /by &lt;date&gt;: Adds a new task with a deadline.
+     * - event &lt;description&gt; /from &lt;start&gt; /to &lt;end&gt;: Adds a new event task with a duration.
+     * - mark &lt;index&gt;: Marks a task as done.
+     * - unmark &lt;index&gt;: Marks a task as undone.
+     * - delete &lt;index&gt;: Deletes a task from the todo list.
+     *
      * If an invalid command is entered, an exception is thrown and an error message is displayed.
-     * 
+     *
      * @throws BiboException if an error occurs while processing commands.
      */
     private void run() {
@@ -61,6 +79,9 @@ public class Bibo {
             case DELETE:
                 task = todoList.changeTaskStatus(cmd, args);
                 break;
+            default:
+                // should not reach here
+                break;
             }
 
             if (task != null) {
@@ -72,32 +93,13 @@ public class Bibo {
         } catch (IOException e) {
             ui.speak("Error reading input.");
         }
-        
+
         run();
     }
 
     /**
-     * Updates todo list data by reading from file.
-     * 
-     * @throws BiboException if an error occurs while updating todo list.
-     */
-    public Bibo() throws BiboException {
-        this.ui = new Ui();
-        this.todoList = new TaskList();
-        this.storage = new Storage();
-
-        try {
-            storage.loadTodoList(this);
-        } catch (BiboTodoListFileException e) {
-            throw e;
-        }
-
-        ui.open();
-    }
-
-    /**
-     * Initialises new Bibo instance and starts conversation.
-     * 
+     * Initialises program and starts Bibo.
+     *
      * @param args Command line arguments.
      * @throws BiboException if an error occurs while processing commands.
      */

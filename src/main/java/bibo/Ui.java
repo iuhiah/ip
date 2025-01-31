@@ -1,7 +1,7 @@
 package bibo;
 
-import java.util.Scanner;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * Represents a user interface that interacts with the user.
@@ -15,17 +15,17 @@ public class Ui {
 
     /**
      * Prints a formatted message to the console.
-     * 
+     *
      * @param message Message to print.
      */
     protected void speak(String message) {
         System.out.println("\n---------- Bibo says: ----------");
         System.out.println(message);
     }
-    
+
     /**
      * Reads user input from console.
-     * 
+     *
      * @return User input.
      * @throws IOException
      */

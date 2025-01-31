@@ -7,7 +7,7 @@ public class BiboTodoListIndexException extends BiboException {
     public BiboTodoListIndexException() {
         super("Invalid index.");
     }
-    
+
     public BiboTodoListIndexException(String message) {
         super(message);
     }
