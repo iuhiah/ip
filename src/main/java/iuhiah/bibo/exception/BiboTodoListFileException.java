@@ -1,4 +1,4 @@
-package bibo.exception;
+package iuhiah.bibo.exception;
 
 /**
  * Represents an exception thrown when there is an error reading/writing to/from the todo list file.

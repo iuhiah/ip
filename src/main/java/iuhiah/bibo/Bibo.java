@@ -1,10 +1,10 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.io.IOException;
 
-import bibo.exception.BiboException;
-import bibo.exception.BiboTodoListFileException;
-import bibo.task.Task;
+import iuhiah.bibo.exception.BiboException;
+import iuhiah.bibo.exception.BiboTodoListFileException;
+import iuhiah.bibo.task.Task;
 
 /**
  * Represents a personal assistant that helps manage tasks.

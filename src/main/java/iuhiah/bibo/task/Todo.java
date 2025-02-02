@@ -1,4 +1,4 @@
-package bibo.task;
+package iuhiah.bibo.task;
 
 /**
  * Represents a todo task.

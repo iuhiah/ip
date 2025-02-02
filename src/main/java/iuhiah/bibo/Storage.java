@@ -1,4 +1,4 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import bibo.exception.BiboTodoListFileException;
+import iuhiah.bibo.exception.BiboTodoListFileException;
 
 /**
  * Represents a file handler that handles file operations.

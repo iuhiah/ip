@@ -1,4 +1,4 @@
-package bibo.exception;
+package iuhiah.bibo.exception;
 
 /**
  * Represents an exception that is thrown when the task description format is invalid.

@@ -1,4 +1,4 @@
-package seedu.bibo;
+package iuhiah.bibo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,9 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import bibo.Command;
-import bibo.Parser;
-import bibo.exception.BiboTaskDescriptionException;
+import iuhiah.bibo.exception.BiboTaskDescriptionException;
 
 /**
  * Represents a test class for Parser.

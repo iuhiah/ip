@@ -1,13 +1,13 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
-import bibo.exception.BiboTaskDescriptionException;
-import bibo.exception.BiboTodoListIndexException;
-import bibo.exception.BiboUnknownCommandException;
+import iuhiah.bibo.exception.BiboTaskDescriptionException;
+import iuhiah.bibo.exception.BiboTodoListIndexException;
+import iuhiah.bibo.exception.BiboUnknownCommandException;
 
 /**
  * Represents a parser that parses inputs.

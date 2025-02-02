@@ -1,12 +1,12 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.util.ArrayList;
 
-import bibo.exception.BiboException;
-import bibo.exception.BiboTaskDescriptionException;
-import bibo.exception.BiboTodoListIndexException;
-import bibo.exception.BiboUnknownCommandException;
-import bibo.task.Task;
+import iuhiah.bibo.exception.BiboException;
+import iuhiah.bibo.exception.BiboTaskDescriptionException;
+import iuhiah.bibo.exception.BiboTodoListIndexException;
+import iuhiah.bibo.exception.BiboUnknownCommandException;
+import iuhiah.bibo.task.Task;
 
 /**
  * Represents a command.

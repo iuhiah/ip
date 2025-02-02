@@ -1,4 +1,4 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.io.IOException;
 import java.util.Scanner;

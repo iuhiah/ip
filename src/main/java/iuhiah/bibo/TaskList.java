@@ -1,14 +1,14 @@
-package bibo;
+package iuhiah.bibo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import bibo.exception.BiboTaskDescriptionException;
-import bibo.exception.BiboTodoListIndexException;
-import bibo.task.Deadline;
-import bibo.task.Event;
-import bibo.task.Task;
-import bibo.task.Todo;
+import iuhiah.bibo.exception.BiboTaskDescriptionException;
+import iuhiah.bibo.exception.BiboTodoListIndexException;
+import iuhiah.bibo.task.Deadline;
+import iuhiah.bibo.task.Event;
+import iuhiah.bibo.task.Task;
+import iuhiah.bibo.task.Todo;
 
 /**
  * Represents a list of tasks.
