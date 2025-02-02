@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import bibo.exception.BiboTaskDescriptionException;
 import bibo.exception.BiboTodoListIndexException;
-import bibo.exception.BiboUnknownCommandException;
 import bibo.task.Deadline;
 import bibo.task.Event;
 import bibo.task.Task;
@@ -15,10 +14,23 @@ import bibo.task.Todo;
  * Represents a list of tasks.
  */
 public class TaskList {
+    private static Command cmd;
     private ArrayList<Task> tasks;
 
+    /**
+     * Constructs a task list.
+     */
     public TaskList() {
         this.tasks = new ArrayList<>();
+    }
+
+    /**
+     * Sets command to be checked.
+     *
+     * @param command Command to set.
+     */
+    protected static void setCommand(Command command) {
+        cmd = command;
     }
 
     /**
@@ -31,80 +43,31 @@ public class TaskList {
     }
 
     /**
-     * Constructs an update message after performing a task action.
+     * Adds task to the todo list.
+     * Task types: todo, deadline, event.
      *
-     * @param cmd
-     * @param task
-     * @return Update message.
-     */
-    protected String updateTaskMessage(Parser.Commands cmd, Task task) {
-        StringBuilder message = new StringBuilder();
-
-        switch (cmd) {
-        case TODO:
-        case DEADLINE:
-        case EVENT:
-            message.append("Got it. I've added this task:\n");
-            break;
-        case MARK:
-            message.append("Alright! I've marked this task as done:\n");
-            break;
-        case UNMARK:
-            message.append("Alright! I've marked this task as undone:\n");
-            break;
-        case DELETE:
-            message.append("Alright! I've deleted this task:\n");
-            break;
-        default:
-            // should not reach here
-            break;
-        }
-
-        message.append(task.toString());
-        if (cmd != Parser.Commands.MARK && cmd != Parser.Commands.UNMARK) {
-            message.append("\nNow you have " + tasks.size() + " tasks in the list.");
-        }
-
-        return message.toString();
-    }
-
-    /**
-     * Adds task to the todo list from file data.
-     *
-     * @param taskData Task data read from file.
+     * @param cmd Command to add task.
+     * @param args Arguments for task description.
      * @return Task added to todo list.
-     * @throws BiboTaskDescriptionException if task description is invalid.
-     * @throws BiboUnknownCommandException if task type is unknown.
+     * @throws BiboTaskDescriptionException If task description format is invalid.
      */
-    protected Task addTaskFromFile(String taskData) throws BiboTaskDescriptionException, BiboUnknownCommandException {
-        try {
-            Parser.Commands cmd = Parser.getTaskType(taskData.charAt(0));
-            String taskDescription = taskData.split("\\|", 2)[1].trim();
-            Task task = addTask(cmd, taskDescription);
-
-            if (taskData.charAt(1) == '1') {
-                task.markAsDone();
-            }
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        } catch (BiboUnknownCommandException e) {
-            throw e;
-        }
-    }
-
-    protected Task addTask(Parser.Commands cmd, String args) throws BiboTaskDescriptionException {
+    protected Task addTask(String args) throws BiboTaskDescriptionException {
         Task task = null;
         try {
-            switch (cmd) {
+            String[] parsedDescription = Parser.parseTaskDescription(args);
+            LocalDateTime[] dateTime;
+
+            switch (cmd.getCommandType()) {
             case TODO:
-                task = addTodo(args);
+                task = new Todo(parsedDescription[0]);
                 break;
             case DEADLINE:
-                task = addDeadline(args);
+                dateTime = Parser.parseTaskDateTime(parsedDescription);
+                task = new Deadline(parsedDescription[0], dateTime[0]);
                 break;
             case EVENT:
-                task = addEvent(args);
+                dateTime = Parser.parseTaskDateTime(parsedDescription);
+                task = new Event(parsedDescription[0], dateTime[0], dateTime[1]);
                 break;
             default:
                 // should not reach here
@@ -113,65 +76,33 @@ public class TaskList {
         } catch (BiboTaskDescriptionException e) {
             throw e;
         }
+
+        tasks.add(task);
         return task;
     }
 
-    private Task addTodo(String description) throws BiboTaskDescriptionException {
+    /**
+     * Changes task status in the todo list.
+     * Options: mark, unmark, delete.
+     *
+     * @param index Index of task to change status.
+     * @return Task with status changed.
+     * @throws BiboTodoListIndexException If task index is invalid.
+     */
+    protected Task changeTaskStatus(String index) throws BiboTodoListIndexException {
         try {
-            String parsedDescription =
-                Parser.parseTaskDescription(Parser.Commands.TODO, description)[0];
-            Task task = new Todo(parsedDescription);
-            tasks.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
+            int taskIndex = Parser.parseTaskIndex(index) - 1;
+            Task task = tasks.get(taskIndex);
 
-    private Task addDeadline(String description) throws BiboTaskDescriptionException {
-        try {
-            String[] parsedDescription =
-                Parser.parseTaskDescription(Parser.Commands.DEADLINE, description);
-            LocalDateTime[] dateTime =
-                Parser.parseTaskDateTime(parsedDescription);
-            Task task = new Deadline(parsedDescription[0], dateTime[0]);
-            tasks.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
-
-    private Task addEvent(String description) throws BiboTaskDescriptionException {
-        try {
-            String[] parsedDescription =
-                Parser.parseTaskDescription(Parser.Commands.EVENT, description);
-            LocalDateTime[] dateTime =
-                Parser.parseTaskDateTime(parsedDescription);
-            Task task = new Event(parsedDescription[0],
-                                  dateTime[0],
-                                  dateTime[1]);
-            tasks.add(task);
-            return task;
-        } catch (BiboTaskDescriptionException e) {
-            throw e;
-        }
-    }
-
-    protected Task changeTaskStatus(Parser.Commands cmd, String args) throws BiboTodoListIndexException {
-        try {
-            int index = Parser.parseTaskIndex(args);
-            Task task = tasks.get(index - 1);
-
-            switch (cmd) {
+            switch (cmd.getCommandType()) {
             case MARK:
-                markTask(task);
+                task.markAsDone();
                 break;
             case UNMARK:
-                unmarkTask(task);
+                task.markAsUndone();
                 break;
             case DELETE:
-                deleteTask(task);
+                tasks.remove(taskIndex);
                 break;
             default:
                 // should not reach here
@@ -180,20 +111,34 @@ public class TaskList {
 
             return task;
         } catch (IndexOutOfBoundsException e) {
-            throw new BiboTodoListIndexException("Task index out of range!");
+            throw new BiboTodoListIndexException("Task index out of bounds!");
+        } catch (BiboTodoListIndexException e) {
+            throw e;
         }
     }
 
-    private void markTask(Task task) {
-        task.markAsDone();
-    }
+    /**
+     * Finds tasks matching keyword in todo list.
+     *
+     * @param keyword Keyword to match.
+     * @return Tasks matching keyword.
+     */
+    protected ArrayList<String> findTasks(String keyword) {
+        ArrayList<String> messages = new ArrayList<>();
+        int count = 0;
 
-    private void unmarkTask(Task task) {
-        task.markAsUndone();
-    }
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                messages.add((count + 1) + ". " + task.toString() + "\n");
+                count++;
+            }
+        }
 
-    private void deleteTask(Task task) {
-        tasks.remove(task);
+        if (count == 0) {
+            messages.add("No tasks found!");
+        }
+
+        return messages;
     }
 
     /**
@@ -211,15 +156,18 @@ public class TaskList {
 
     @Override
     public String toString() {
+        if (tasks.size() == 0) {
+            return "List is empty!";
+        }
+
         StringBuilder message = new StringBuilder();
-        message.append("Here is your todo list:");
 
         for (int i = 0; i < tasks.size(); i++) {
-            message.append(
-                "\n" + (i + 1) + ". "
-                + tasks.get(i).toString()
-            );
+            message.append((i + 1) + ". " + tasks.get(i).toString() + "\n");
         }
+
+        // remove trailing newline
+        message.setLength(message.length() - 1);
         return message.toString();
     }
 }

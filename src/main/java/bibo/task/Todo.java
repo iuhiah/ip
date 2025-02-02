@@ -10,7 +10,7 @@ public class Todo extends Task {
 
     @Override
     public String toFileString() {
-        return "T" + super.toFileString();
+        return "todo" + super.toFileString();
     }
 
     @Override
