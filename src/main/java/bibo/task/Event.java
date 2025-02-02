@@ -24,7 +24,7 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        return "E" + super.toFileString() + " /from " + start + " /to " + end;
+        return "event" + super.toFileString() + " /from " + start + " /to " + end;
     }
 
     @Override

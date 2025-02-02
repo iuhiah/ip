@@ -22,10 +22,25 @@ public class Task {
         this.isDone = false;
     }
 
+    /**
+     * Gets task description.
+     *
+     * @return Task description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets task completion status to done.
+     */
     public void markAsDone() {
         this.isDone = true;
     }
 
+    /**
+     * Sets task completion status to undone.
+     */
     public void markAsUndone() {
         this.isDone = false;
     }
@@ -46,7 +61,7 @@ public class Task {
      * @return Task description in file format.
      */
     public String toFileString() {
-        return (isDone ? "1" : "0") + "|" + description;
+        return (isDone ? "1" : "0") + " " + description;
     }
 
     @Override

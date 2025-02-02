@@ -2,6 +2,7 @@ package bibo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
 import bibo.exception.BiboTaskDescriptionException;
@@ -14,11 +15,15 @@ import bibo.exception.BiboUnknownCommandException;
 public class Parser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
         DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][yyyy-MM-dd'T'kk:mm]");
+    private static Command cmd;
 
-    protected enum Commands {
-        BYE, LIST,
-        TODO, DEADLINE, EVENT,
-        MARK, UNMARK, DELETE
+    /**
+     * Sets command to be used for parsing.
+     *
+     * @param command Command to set.
+     */
+    protected static void setCommand(Command command) {
+        cmd = command;
     }
 
     /**
@@ -28,31 +33,16 @@ public class Parser {
      * @return enum value of valid command.
      * @throws BiboUnknownCommandException If command is not valid.
      */
-    protected static Commands checkValidCommand(String cmd) throws BiboUnknownCommandException {
+    protected static String parseInput(String input) throws BiboUnknownCommandException {
         try {
-            return Commands.valueOf(cmd.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new BiboUnknownCommandException();
-        }
-    }
+            String[] inputSplit = input.split(" ", 2);
 
-    /**
-     * Gets task type from user input (file data).
-     *
-     * @param cmd User input.
-     * @return Task type.
-     * @throws BiboUnknownCommandException If task type is invalid.
-     */
-    protected static Commands getTaskType(char cmd) throws BiboUnknownCommandException {
-        switch (cmd) {
-        case 'T':
-            return Commands.TODO;
-        case 'D':
-            return Commands.DEADLINE;
-        case 'E':
-            return Commands.EVENT;
-        default:
-            throw new BiboUnknownCommandException("Unknown task type in file data!");
+            String cmdString = inputSplit[0];
+            cmd.setCommandType(cmdString);
+
+            return inputSplit.length > 1 ? inputSplit[1] : "";
+        } catch (BiboUnknownCommandException e) {
+            throw e;
         }
     }
 
@@ -64,25 +54,32 @@ public class Parser {
      * @return Parsed arguments for task description.
      * @throws BiboTaskDescriptionException If task description is invalid.
      */
-    protected static String[] parseTaskDescription(Commands cmd, String input) throws BiboTaskDescriptionException {
+    protected static String[] parseTaskDescription(String input) throws BiboTaskDescriptionException {
         if (input.isBlank()) {
             throw new BiboTaskDescriptionException("Task description empty!");
         }
 
         String[] args = new String[] { input };
 
-        if (cmd == Commands.DEADLINE) {
+        switch (cmd.getCommandType()) {
+        case TODO:
+            break;
+        case DEADLINE:
             args = input.split(" /by ");
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Deadline description format invalid!");
             }
-
-        } else if (cmd == Commands.EVENT) {
+            break;
+        case EVENT:
             args = input.split(" /from | /to ");
             if (args.length != 3 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new BiboTaskDescriptionException("Event description format invalid!");
             }
+            break;
+        default:
+            throw new BiboTaskDescriptionException("Error parsing command!");
         }
+
         return args;
     }
 
@@ -98,13 +95,18 @@ public class Parser {
 
         // todo: add support for more date time formats
         try {
-            if (args.length == 2) {
+            switch (cmd.getCommandType()) {
+            case DEADLINE:
                 dateTime[0] = LocalDateTime.parse(args[1], DATE_TIME_FORMATTER);
-            } else {
+                break;
+            case EVENT:
                 dateTime[0] = LocalDateTime.parse(args[1], DATE_TIME_FORMATTER);
                 dateTime[1] = LocalDateTime.parse(args[2], DATE_TIME_FORMATTER);
+                break;
+            default:
+                throw new BiboTaskDescriptionException();
             }
-        } catch (Exception e) {
+        } catch (DateTimeParseException | BiboTaskDescriptionException e) {
             throw new BiboTaskDescriptionException("Invalid date/time format!");
         }
         return dateTime;
