@@ -23,8 +23,18 @@ Prerequisites: JDK 17, update Intellij to the most recent version.
 ## Installation
 
 1. Save the jar file to an empty folder.
-2. Open a command window in that folder.
+2. Open the terminal/command prompt. Depending on your operating system:
+   Windows: Windows + R and type `cmd` to open up the command prompt.
+   Mac: Command + Space to open Spotlight and look for the terminal app.
+   Linux: Ctrl + Alt + T to open the terminal.
+3. Navigate to the folder where the jar file is saved with:
+```bash
+cd <path to folder>
+```
+If you are unsure of the path, type `cd` followed by a space and drag the folder containing the jar file into the terminal/command prompt.
 3. Run the command java -jar bibo.jar
+
+*Note: Double-clicking the jar file is not supported. You must run the jar file from the command line in order to interact with Bibo.*
 
 If the installation is successful, you should see the [expected output](#expected-output).
 
