@@ -29,13 +29,20 @@ test {
 }
 
 application {
-    mainClass.set("iuhiah.bibo.Main")
+    mainClass.set("iuhiah.bibo.Bibo")
 }
 
 shadowJar {
-    archiveBaseName = "bibo"
-    archiveFileName = "bibo.jar"
-    archiveClassifier = null
+    archiveFileName = 'bibo.jar'
+    archiveClassifier = ''
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'iuhiah.bibo.Main'
+        )
+    }
 }
 
 run {
