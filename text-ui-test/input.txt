@@ -1,9 +1,0 @@
-list
-todo borrow book
-deadline return book /by 12-10-2021
-deadline return book /by 12-12-2021 0100
-event project meeting /from 08-10-2021 1400 /to 08-10-2021 1600
-mark 2
-delete 1
-list
-bye
