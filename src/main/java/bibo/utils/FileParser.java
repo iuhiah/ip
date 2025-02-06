@@ -13,7 +13,8 @@ public class FileParser {
      * Parses task data from file.
      *
      * @param taskData Task data from file.
-     * @param isDone Whether task is done.
+     * @return Parsed task data {taskType, taskData, isDone}.
+     * @throws TaskFormatException If task data format is invalid.
      */
     public static String[] parseTaskData(String taskData) throws TaskFormatException {
         String taskType = null;

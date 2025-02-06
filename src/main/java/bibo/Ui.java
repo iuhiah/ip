@@ -26,19 +26,19 @@ public class Ui {
     }
 
     /**
-     * Prints message without Bibo header.
-     */
-    public void join(String message) {
-        System.out.println(message);
-    }
-
-    /**
      * Prints formatted Bibo header with message.
      *
      * @param message Message to print.
      */
     public void speak(String message) {
         System.out.println("\n---------- Bibo says: ----------");
+        System.out.println(message);
+    }
+
+    /**
+     * Prints message without Bibo header.
+     */
+    public void join(String message) {
         System.out.println(message);
     }
 
