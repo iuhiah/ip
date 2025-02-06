@@ -72,19 +72,22 @@ public class TestInputParser {
             try {
                 InputParser.parseTaskDescription(CommandType.TODO, "description");
             } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
+                assertEquals(e.getCause().getMessage(),
+                    TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
             }
 
             try {
                 InputParser.parseTaskDescription(CommandType.DEADLINE, "description");
             } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
+                assertEquals(e.getCause().getMessage(),
+                    TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
             }
 
             try {
                 InputParser.parseTaskDescription(CommandType.EVENT, "description");
             } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
+                assertEquals(e.getCause().getMessage(),
+                    TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
