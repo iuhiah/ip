@@ -47,14 +47,13 @@ public class Bibo {
 
         for (int i = 0; i < allTaskData.length; i++) {
             String taskData = allTaskData[i];
-            boolean isDone = false;
 
             try {
-                String[] parsedTaskData = FileParser.parseTaskData(taskData, isDone);
+                String[] parsedTaskData = FileParser.parseTaskData(taskData);
                 cmd.setCommandType(parsedTaskData[0]);
                 Task task = taskList.addTask(cmd.getCommandType(), parsedTaskData[1]);
 
-                if (isDone) {
+                if (parsedTaskData[2].equals("true")) {
                     task.markAsDone();
                 }
             } catch (BiboException e) {

@@ -55,6 +55,13 @@ public class Task {
         return dateTime.format(DATE_TIME_FORMATTER);
     }
 
+    /**
+     * Returns task string in file format.
+     */
+    public String toFileString() {
+        return this.toString();
+    }
+
     @Override
     public String toString() {
         return (isDone ? "[X] " : "[ ] ") + description;

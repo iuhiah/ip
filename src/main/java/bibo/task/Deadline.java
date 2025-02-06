@@ -29,6 +29,15 @@ public class Deadline extends Task {
         this(description, dateTime[0]);
     }
 
+    /**
+     * Gets task deadline.
+     *
+     * @return Task deadline.
+     */
+    public LocalDateTime getBy() {
+        return by;
+    }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + super.formatDateTime(by) + ")";

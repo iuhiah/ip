@@ -124,8 +124,8 @@ public class Command {
         protected void addTaskListSize(TaskList taskList) {
             int size = taskList.getTaskListSize();
 
-            messages.add("Now you have " + size + " task" +
-                (size == 1 ? "" : "s") + " in the list.");
+            messages.add("Now you have " + size + " task"
+                    + (size == 1 ? "" : "s") + " in the list.");
         }
 
         /**
