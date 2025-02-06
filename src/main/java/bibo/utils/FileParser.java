@@ -1,5 +1,8 @@
 package bibo.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import bibo.exceptions.TaskFormatException;
 
 /**
@@ -12,40 +15,43 @@ public class FileParser {
      * @param taskData Task data from file.
      * @param isDone Whether task is done.
      */
-    public static String[] parseTaskData(String taskData, boolean isDone) {
+    public static String[] parseTaskData(String taskData) throws TaskFormatException {
         String taskType = null;
-        StringBuilder parsedDataString = new StringBuilder();
+        String isDone = "false";
+
+        // using regex to parse
+        String regex = "^\\[(?<taskType>[TDE])\\]\\[(?<isDone>[X ])\\] (?<taskData>[\\S]+.*)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(taskData);
 
         try {
-            String[] splitTaskData = taskData.split(" \\| ", 3);
+            if (matcher.find()) {
+                taskType = matcher.group("taskType");
+                isDone = (matcher.group("isDone").equals("X")) ? "true" : "false";
+                taskData = matcher.group("taskData");
 
-            taskType = splitTaskData[0];
-            switch (taskType) {
-            case "T":
-                taskType = "todo";
-                break;
-            case "D":
-                taskType = "deadline";
-                splitTaskData[2] = splitTaskData[2]
-                        .replace(" (by: ", " /by ")
-                        .replace(")", "");
-                break;
-            case "E":
-                taskType = "event";
-                splitTaskData[2] = splitTaskData[2]
-                        .replace(" (from: ", " /from ")
-                        .replace(" to ", " /to ")
-                        .replace(")", "");
-                break;
-            default:
-                throw new TaskFormatException(
-                    TaskFormatException.ErrorType.UNKNOWN_TASK_TYPE.toString()
-                );
+                switch (taskType) {
+                case "T":
+                    taskType = "todo";
+                    break;
+                case "D":
+                    taskType = "deadline";
+                    break;
+                case "E":
+                    taskType = "event";
+                    break;
+                default:
+                    throw new TaskFormatException(
+                        TaskFormatException.ErrorType.UNKNOWN_TASK_TYPE.toString()
+                    );
+                }
+            } else {
+                throw new TaskFormatException();
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (TaskFormatException e) {
+            throw e;
         }
 
-        return new String[] { taskType, parsedDataString.toString() };
+        return new String[] { taskType, taskData, isDone };
     }
 }

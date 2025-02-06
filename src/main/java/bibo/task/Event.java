@@ -33,6 +33,13 @@ public class Event extends Task {
     }
 
     @Override
+    public String toFileString() {
+        return "[E]" + super.toString()
+            + " /from " + super.formatDateTime(start)
+            + " /to " + super.formatDateTime(end);
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString()
             + " (from: " + super.formatDateTime(start)

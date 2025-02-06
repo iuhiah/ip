@@ -43,7 +43,7 @@ public class TaskFormatException extends BiboException {
     }
 
     public TaskFormatException() {
-        super("Task description is invalid. Please provide a valid task description.");
+        super("Task format is invalid.");
     }
 
     public TaskFormatException(String message) {
@@ -52,6 +52,6 @@ public class TaskFormatException extends BiboException {
 
     @Override
     public String toString() {
-        return "TaskDescriptionException: " + getMessage();
+        return "TaskFormatException: " + getMessage();
     }
 }

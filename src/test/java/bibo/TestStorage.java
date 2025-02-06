@@ -109,7 +109,7 @@ public class TestStorage {
     @Test
     public void testCheckCorruptedData_corruptedData_createsNewFile() {
         try {
-            Method method = Storage.class.getDeclaredMethod("initialFileUpdate", int.class, int.class);
+            Method method = Storage.class.getDeclaredMethod("checkCorruptedData", int.class, int.class);
             method.setAccessible(true);
 
             // if data is corrupted, loadedTasks < totalTasks

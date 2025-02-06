@@ -1,7 +1,5 @@
 package bibo.utils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
 import bibo.Command.CommandType;
@@ -14,25 +12,26 @@ import bibo.exceptions.UnknownCommandException;
  */
 public class InputParser {
     /**
-     * Checks if given command is a valid command.
+     * Parses user input into command and arguments.
      *
-     * @return enum value of valid command.
-     * @throws UnknownCommandException If command is not valid.
+     * @param input User input.
+     * @return Parsed command and arguments.
      */
     public static String[] parseInput(String input) {
         String[] result = input.split(" ", 2);
         return result.length == 1
-            ? new String[] { result[0], "" }
-            : result;
+                ? new String[] { result[0], "" }
+                : result;
     }
 
     /**
      * Parses task description from user input.
-     * Parsed data will be used to create a new task.
      *
+     * @param cmd Task type.
      * @param input User input.
-     * @return Parsed arguments for task description.
-     * @throws TaskFormatException If task description is invalid.
+     * @return Parsed task description.
+     * @throws TaskFormatException If task description format is invalid.
+     * @throws UnknownCommandException If task type is unknown.
      */
     public static String[] parseTaskDescription(CommandType cmd, String input)
             throws TaskFormatException, UnknownCommandException {
@@ -70,28 +69,6 @@ public class InputParser {
         }
 
         return args;
-    }
-
-    /**
-     * Parses task date time from user input.
-     *
-     * @param args Date/time arguments.
-     * @return Parsed date time.
-     * @throws TaskFormatException If date time format is invalid.
-     */
-    protected static LocalDateTime[] parseTaskDateTime(String[] dateTimes) throws TaskFormatException {
-        LocalDateTime[] dateTime;
-        // todo: add support for more date time formats
-        try {
-            dateTime = Arrays.stream(dateTimes)
-                .map(DateTimeUtil::parseDateTime)
-                .toArray(LocalDateTime[]::new);
-        } catch (DateTimeParseException e) {
-            throw new TaskFormatException(
-                TaskFormatException.ErrorType.DATE_TIME_INVALID.toString()
-            );
-        }
-        return dateTime;
     }
 
     /**

@@ -16,23 +16,11 @@ public class DateTimeUtil {
      * @param dateTime Date and time string.
      * @return Parsed date and time.
      */
-    public static LocalDateTime parseDateTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, DATE_TIME_FORMATTER);
-    }
-
-    /**
-     * Parses date and time from array of strings.
-     *
-     * @param dateTimes Array of date and time strings.
-     * @return Parsed date and time.
-     */
-    public static LocalDateTime[] parseDateTime(String[] dateTimes) {
-        LocalDateTime[] dateTime = new LocalDateTime[dateTimes.length];
-
-        for (int i = 0; i < dateTimes.length; i++) {
-            dateTime[i] = parseDateTime(dateTimes[i]);
+    public static LocalDateTime[] parseDateTime(String... dateTime) {
+        LocalDateTime[] result = new LocalDateTime[dateTime.length];
+        for (int i = 0; i < dateTime.length; i++) {
+            result[i] = LocalDateTime.parse(dateTime[i], DATE_TIME_FORMATTER);
         }
-
-        return dateTime;
+        return result;
     }
 }
