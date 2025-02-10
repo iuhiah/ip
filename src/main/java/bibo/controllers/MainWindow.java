@@ -6,11 +6,14 @@ import java.util.TimerTask;
 import bibo.Bibo;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
 
 /**
@@ -24,12 +27,11 @@ public class MainWindow extends AnchorPane {
     @FXML
     private TextField userInput;
     @FXML
-    private Button sendButton;
+    private ImageView biboImg;
+    @FXML
+    private ImageView userImg;
 
     private Bibo bibo;
-
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
-    private Image biboImage = new Image(this.getClass().getResourceAsStream("/images/bibo.png"));
 
     /**
      * Initializes main window.
@@ -37,9 +39,18 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-        String greeting = "Beep boop! Bibo!";
+
+        Image img = new Image(getClass().getResource("/images/background.png").toExternalForm());
+        BackgroundImage bgImg = new BackgroundImage(img,
+                javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
+                javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
+                javafx.scene.layout.BackgroundPosition.CENTER,
+                new BackgroundSize(100, 100, true, true, false, true)
+        );
+        dialogContainer.setBackground(new Background(bgImg));
+
         dialogContainer.getChildren().add(
-                DialogBox.getBiboDialog(greeting, biboImage)
+            DialogBox.getBiboDialog("Beep boop! Bibo!")
         );
     }
 
@@ -58,8 +69,8 @@ public class MainWindow extends AnchorPane {
 
         String response = bibo.getResponse(input);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getBiboDialog(response, biboImage)
+                DialogBox.getUserDialog(input),
+                DialogBox.getBiboDialog(response)
         );
 
         userInput.clear();

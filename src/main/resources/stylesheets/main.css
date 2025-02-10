@@ -1,0 +1,15 @@
+
+
+#dialog {
+    -fx-label-padding: .2em .5em;
+    -fx-background-color: white;
+    -fx-background-radius: 1em;
+    -fx-border-radius: 1em;
+    -fx-border-width: 4px;
+    -fx-border-color: transparent;
+}
+
+#caret {
+    -fx-fill: white;
+    -fx-translate-x: -1em;
+}
