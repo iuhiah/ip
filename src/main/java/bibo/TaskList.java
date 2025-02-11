@@ -3,6 +3,7 @@ package bibo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import bibo.exceptions.TaskFormatException;
 import bibo.exceptions.TaskListIndexException;
@@ -127,17 +128,12 @@ public class TaskList {
      * @return Tasks matching keyword.
      */
     protected ArrayList<String> findTasks(String keyword) {
-        ArrayList<String> messages = new ArrayList<>();
-        int count = 0;
+        ArrayList<String> messages = tasks.stream()
+                .filter(task -> task.getDescription().contains(keyword))
+                .map(task -> tasks.indexOf(task) + 1 + ". " + task.toString())
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
-        for (Task task : tasks) {
-            if (task.getDescription().contains(keyword)) {
-                messages.add((count + 1) + ". " + task.toString() + "\n");
-                count++;
-            }
-        }
-
-        if (count == 0) {
+        if (messages.size() == 0) {
             messages.add("No tasks found!");
         }
 
@@ -150,11 +146,9 @@ public class TaskList {
      * @return Task list in string format.
      */
     protected String toFileString() {
-        StringBuilder fileData = new StringBuilder();
-        for (Task task : tasks) {
-            fileData.append(task.toString() + "\n");
-        }
-        return fileData.toString();
+        return tasks.stream()
+                .map(Task::toFileString)
+                .collect(Collectors.joining(null));
     }
 
     @Override
@@ -163,14 +157,8 @@ public class TaskList {
             return "List is empty!";
         }
 
-        StringBuilder message = new StringBuilder();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            message.append((i + 1) + ". " + tasks.get(i).toString() + "\n");
-        }
-
-        // remove trailing newline
-        message.setLength(message.length() - 1);
-        return message.toString();
+        return tasks.stream()
+                .map(task -> tasks.indexOf(task) + 1 + ". " + task.toString())
+                .collect(Collectors.joining("\n"));
     }
 }
