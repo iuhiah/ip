@@ -19,26 +19,12 @@ public class Ui {
     }
 
     /**
-     * Prints formatted Bibo header.
-     */
-    public void speak() {
-        System.out.println("\n---------- Bibo says: ----------");
-    }
-
-    /**
      * Prints formatted Bibo header with message.
      *
      * @param message Message to print.
      */
     public void speak(String message) {
         System.out.println("\n---------- Bibo says: ----------");
-        System.out.println(message);
-    }
-
-    /**
-     * Prints message without Bibo header.
-     */
-    public void join(String message) {
         System.out.println(message);
     }
 
@@ -50,15 +36,7 @@ public class Ui {
      */
     public String getInput() throws IOException {
         System.out.println("\n----------- You say: -----------");
-        String input = scanner.nextLine();
-
-        // for logging purposes, if input is redirected
-        if (System.console() == null) {
-            // echo input to console
-            System.out.println(input);
-        }
-
-        return input;
+        return scanner.nextLine();
     }
 
     /**
