@@ -26,7 +26,7 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
-        assert(tasks != null);
+        assert (tasks != null) : "Task list should not be null";
     }
 
     /**
@@ -49,6 +49,7 @@ public class TaskList {
      */
     protected Task addTask(Command.CommandType cmd, String args) throws TaskFormatException {
         Task task = null;
+
         try {
             String[] parsedDescription = InputParser.parseTaskDescription(cmd, args);
             String[] dateTime = Arrays.copyOfRange(parsedDescription, 1, parsedDescription.length);
@@ -112,7 +113,9 @@ public class TaskList {
 
             return task;
         } catch (IndexOutOfBoundsException e) {
-            throw new TaskListIndexException("Task index out of bounds!");
+            throw new TaskListIndexException(
+                TaskListIndexException.ErrorType.INVALID_INDEX.toString()
+            );
         } catch (TaskListIndexException e) {
             throw e;
         }

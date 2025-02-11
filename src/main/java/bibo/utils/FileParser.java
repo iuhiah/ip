@@ -53,8 +53,8 @@ public class FileParser {
             throw e;
         }
 
-        assert taskType != null;
-        assert taskData != null;
+        assert (taskType != null) : "Task type should not be null";
+        assert (taskData != null) : "Task data should not be null";
 
         return new String[] { taskType, taskData, isDone };
     }

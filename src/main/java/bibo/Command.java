@@ -32,7 +32,7 @@ public class Command {
         try {
             cmd = CommandType.valueOf(command.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new UnknownCommandException("I'm sorry, but I don't know what that means.");
+            throw new UnknownCommandException();
         }
     }
 
@@ -128,23 +128,6 @@ public class Command {
                     + (size == 1 ? "" : "s") + " in the list.");
         }
 
-        /**
-         * Prints messages through UI.
-         *
-         * @param messages Messages to print.
-         */
-        protected void printMessages() {
-            if (messages.isEmpty()) {
-                return;
-            }
-
-            ui.speak();
-            for (String message : messages) {
-                ui.join(message);
-            }
-            messages.clear();
-        }
-
         protected String getResponse() {
             StringBuilder message = new StringBuilder("");
             for (String msg : messages) {
@@ -152,16 +135,6 @@ public class Command {
             }
             messages.clear();
             return message.toString();
-        }
-    }
-
-    protected void run(String args, TaskList taskList) {
-        try {
-            cmd.execute(args, taskList);
-            cmd.printMessages();
-            storage.saveTaskList(taskList);
-        } catch (BiboException e) {
-            ui.speak(e.getMessage());
         }
     }
 
