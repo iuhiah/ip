@@ -53,6 +53,9 @@ public class FileParser {
             throw e;
         }
 
+        assert taskType != null;
+        assert taskData != null;
+
         return new String[] { taskType, taskData, isDone };
     }
 }

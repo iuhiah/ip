@@ -25,6 +25,7 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
+        assert(tasks != null);
     }
 
     /**
