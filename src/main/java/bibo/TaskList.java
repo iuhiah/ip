@@ -133,10 +133,6 @@ public class TaskList {
                 .map(task -> tasks.indexOf(task) + 1 + ". " + task.toString())
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
-        if (messages.size() == 0) {
-            messages.add("No tasks found!");
-        }
-
         return messages;
     }
 
@@ -148,7 +144,7 @@ public class TaskList {
     protected String toFileString() {
         return tasks.stream()
                 .map(Task::toFileString)
-                .collect(Collectors.joining(null));
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

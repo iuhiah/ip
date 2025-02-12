@@ -28,6 +28,7 @@ public class Bibo {
         this.storage = new Storage();
 
         this.cmd = new Command(ui, storage);
+        loadTaskData();
     }
 
     /**
@@ -43,6 +44,10 @@ public class Bibo {
             allTaskData = storage.getTaskData();
         } catch (FileException e) {
             System.out.println(e.getMessage());
+        }
+
+        if (allTaskData == null) {
+            return;
         }
 
         for (int i = 0; i < allTaskData.length; i++) {
@@ -140,7 +145,6 @@ public class Bibo {
      */
     public static void main(String[] args) {
         Bibo bibo = new Bibo();
-        bibo.loadTaskData();
         bibo.ui.open();
         bibo.run();
     }

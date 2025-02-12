@@ -55,6 +55,10 @@ public class Command {
             @Override
             protected void execute(String args, TaskList taskList) {
                 messages.add(taskList.toString());
+
+                if (taskList.getTaskListSize() != 0) {
+                    messages.add(0, "Here are the tasks in your list:");
+                }
             }
         },
         TODO {
@@ -107,6 +111,12 @@ public class Command {
             @Override
             protected void execute(String args, TaskList taskList) {
                 messages = taskList.findTasks(args);
+
+                if (messages.isEmpty()) {
+                    messages.add("No matching tasks found.");
+                } else {
+                    messages.add(0, "Here are the matching tasks in your list:");
+                }
             }
         };
 
