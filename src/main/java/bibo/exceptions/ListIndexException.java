@@ -1,9 +1,9 @@
 package bibo.exceptions;
 
 /**
- * Represents an exception that is thrown when an invalid index is used to access task list.
+ * Represents an exception that is thrown when an invalid index is used to access a list.
  */
-public class TaskListIndexException extends BiboException {
+public class ListIndexException extends BiboException {
     /**
      * Represents the type of error that occurred.
      */
@@ -22,16 +22,16 @@ public class TaskListIndexException extends BiboException {
         }
     }
 
-    public TaskListIndexException() {
+    public ListIndexException() {
         super("Invalid index.");
     }
 
-    public TaskListIndexException(String message) {
+    public ListIndexException(String message) {
         super(message);
     }
 
     @Override
     public String toString() {
-        return "TaskListIndexException: " + getMessage();
+        return "ListIndexException: " + getMessage();
     }
 }

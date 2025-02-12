@@ -1,17 +1,14 @@
-package bibo;
+package bibo.task;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import bibo.Command;
+import bibo.exceptions.ListIndexException;
 import bibo.exceptions.TaskFormatException;
-import bibo.exceptions.TaskListIndexException;
 import bibo.exceptions.UnknownCommandException;
-import bibo.task.Deadline;
-import bibo.task.Event;
-import bibo.task.Task;
-import bibo.task.Todo;
 import bibo.utils.DateTimeUtil;
 import bibo.utils.InputParser;
 
@@ -47,7 +44,7 @@ public class TaskList {
      * @return Task added to task list.
      * @throws TaskFormatException If task description format is invalid.
      */
-    protected Task addTask(Command.CommandType cmd, String args) throws TaskFormatException {
+    public Task addTask(Command.CommandType cmd, String args) throws TaskFormatException {
         Task task = null;
 
         try {
@@ -89,9 +86,9 @@ public class TaskList {
      *
      * @param index Index of task to change status.
      * @return Task with status changed.
-     * @throws TaskListIndexException If task index is invalid.
+     * @throws ListIndexException If task index is invalid.
      */
-    protected Task changeTaskStatus(Command.CommandType cmd, String index) throws TaskListIndexException {
+    public Task changeTaskStatus(Command.CommandType cmd, String index) throws ListIndexException {
         try {
             int taskIndex = InputParser.parseTaskIndex(index) - 1;
             Task task = tasks.get(taskIndex);
@@ -103,7 +100,7 @@ public class TaskList {
             case UNMARK:
                 task.markAsUndone();
                 break;
-            case DELETE:
+            case DELETETASK:
                 tasks.remove(taskIndex);
                 break;
             default:
@@ -113,10 +110,10 @@ public class TaskList {
 
             return task;
         } catch (IndexOutOfBoundsException e) {
-            throw new TaskListIndexException(
-                TaskListIndexException.ErrorType.INVALID_INDEX.toString()
+            throw new ListIndexException(
+                ListIndexException.ErrorType.INVALID_INDEX.toString()
             );
-        } catch (TaskListIndexException e) {
+        } catch (ListIndexException e) {
             throw e;
         }
     }
@@ -127,7 +124,7 @@ public class TaskList {
      * @param keyword Keyword to match.
      * @return Tasks matching keyword.
      */
-    protected ArrayList<String> findTasks(String keyword) {
+    public ArrayList<String> findTasks(String keyword) {
         ArrayList<String> messages = tasks.stream()
                 .filter(task -> task.getDescription().contains(keyword))
                 .map(task -> tasks.indexOf(task) + 1 + ". " + task.toString())
@@ -141,7 +138,7 @@ public class TaskList {
      *
      * @return Task list in string format.
      */
-    protected String toFileString() {
+    public String toFileString() {
         return tasks.stream()
                 .map(Task::toFileString)
                 .collect(Collectors.joining("\n"));
@@ -149,8 +146,8 @@ public class TaskList {
 
     @Override
     public String toString() {
-        if (tasks.size() == 0) {
-            return "List is empty!";
+        if (tasks.isEmpty()) {
+            return "No tasks found!";
         }
 
         return tasks.stream()

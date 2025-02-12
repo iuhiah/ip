@@ -3,10 +3,14 @@ package bibo;
 import java.util.ArrayList;
 
 import bibo.exceptions.BiboException;
+import bibo.exceptions.ListIndexException;
+import bibo.exceptions.NoteFormatException;
 import bibo.exceptions.TaskFormatException;
-import bibo.exceptions.TaskListIndexException;
 import bibo.exceptions.UnknownCommandException;
+import bibo.notes.Note;
+import bibo.notes.Notes;
 import bibo.task.Task;
+import bibo.task.TaskList;
 
 /**
  * Represents a command.
@@ -46,14 +50,14 @@ public class Command {
     public enum CommandType {
         BYE {
             @Override
-            protected void execute(String args, TaskList taskList) {
+            protected void execute(String args, TaskList taskList, Notes notes) {
                 messages.add("Bye. Hope to see you again soon!");
                 ui.close();
             }
         },
         LIST {
             @Override
-            protected void execute(String args, TaskList taskList) {
+            protected void execute(String args, TaskList taskList, Notes notes) {
                 messages.add(taskList.toString());
 
                 if (taskList.getTaskListSize() != 0) {
@@ -63,7 +67,7 @@ public class Command {
         },
         TODO {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskFormatException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws TaskFormatException {
                 Task task = taskList.addTask(this, args);
                 messages.add("Got it. I've added this task:\n" + task);
                 addTaskListSize(taskList);
@@ -71,7 +75,7 @@ public class Command {
         },
         DEADLINE {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskFormatException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws TaskFormatException {
                 Task task = taskList.addTask(this, args);
                 messages.add("Got it. I've added this task:\n" + task);
                 addTaskListSize(taskList);
@@ -79,7 +83,7 @@ public class Command {
         },
         EVENT {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskFormatException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws TaskFormatException {
                 Task task = taskList.addTask(this, args);
                 messages.add("Got it. I've added this task:\n" + task);
                 addTaskListSize(taskList);
@@ -87,21 +91,21 @@ public class Command {
         },
         MARK {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as done:\n" + task);
             }
         },
         UNMARK {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as undone:\n" + task);
             }
         },
-        DELETE {
+        DELETETASK {
             @Override
-            protected void execute(String args, TaskList taskList) throws TaskListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Noted. I've removed this task:\n" + task);
                 addTaskListSize(taskList);
@@ -109,7 +113,7 @@ public class Command {
         },
         FIND {
             @Override
-            protected void execute(String args, TaskList taskList) {
+            protected void execute(String args, TaskList taskList, Notes notes) {
                 messages = taskList.findTasks(args);
 
                 if (messages.isEmpty()) {
@@ -118,7 +122,32 @@ public class Command {
                     messages.add(0, "Here are the matching tasks in your list:");
                 }
             }
+        },
+        NOTE {
+            @Override
+            protected void execute(String args, TaskList taskList, Notes notes) throws NoteFormatException {
+                Note note = notes.add(args);
+                messages.add("Got it. I've added this note:\n" + note);
+            }
+        },
+        DELETENOTE {
+            @Override
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
+                notes.delete(args);
+                messages.add("Noted. I've removed this note:\n" + args);
+            }
+        },
+        NOTES {
+            @Override
+            protected void execute(String args, TaskList taskList, Notes notes) {
+                messages.add(notes.toString());
+
+                if (notes.getNotesSize() != 0) {
+                    messages.add(0, "Here are the notes in your list:");
+                }
+            }
         };
+
 
         private static ArrayList<String> messages = new ArrayList<String>();
 
@@ -129,7 +158,7 @@ public class Command {
          * @param taskList Task list to execute command on.
          * @throws BiboException If an error occurs during execution.
          */
-        protected void execute(String args, TaskList taskList) throws BiboException {}
+        protected void execute(String args, TaskList taskList, Notes notes) throws BiboException {}
 
         protected void addTaskListSize(TaskList taskList) {
             int size = taskList.getTaskListSize();
@@ -148,9 +177,9 @@ public class Command {
         }
     }
 
-    protected String getResponse(String args, TaskList taskList) {
+    protected String getResponse(String args, TaskList taskList, Notes notes) {
         try {
-            cmd.execute(args, taskList);
+            cmd.execute(args, taskList, notes);
             storage.saveTaskList(taskList);
         } catch (BiboException e) {
             return e.getMessage();

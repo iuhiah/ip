@@ -1,6 +1,8 @@
 package bibo;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -40,27 +42,17 @@ public class TestInputParser {
      */
     @Test
     public void testParseTaskDescription_emptyDescription_exceptionThrown() {
-        try {
-            try {
-                InputParser.parseTaskDescription(CommandType.TODO, "");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.EMPTY.toString());
-            }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.TODO, "");
+        }, TaskFormatException.ErrorType.EMPTY.toString());
 
-            try {
-                InputParser.parseTaskDescription(CommandType.DEADLINE, "");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.EMPTY.toString());
-            }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.DEADLINE, "");
+        }, TaskFormatException.ErrorType.EMPTY.toString());
 
-            try {
-                InputParser.parseTaskDescription(CommandType.EVENT, "");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(), TaskFormatException.ErrorType.EMPTY.toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.EVENT, "");
+        }, TaskFormatException.ErrorType.EMPTY.toString());
     }
 
     /**
@@ -68,30 +60,21 @@ public class TestInputParser {
      */
     @Test
     public void testParseTaskDescription_invalidDescription_exceptionThrown() {
-        try {
-            try {
-                InputParser.parseTaskDescription(CommandType.TODO, "description");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(),
-                    TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
-            }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.DEADLINE, "description");
+        }, TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
 
-            try {
-                InputParser.parseTaskDescription(CommandType.DEADLINE, "description");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(),
-                    TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
-            }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.EVENT, "description");
+        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
 
-            try {
-                InputParser.parseTaskDescription(CommandType.EVENT, "description");
-            } catch (Exception e) {
-                assertEquals(e.getCause().getMessage(),
-                    TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.EVENT, "description /from ");
+        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
+
+        assertThrows(TaskFormatException.class, () -> {
+            InputParser.parseTaskDescription(CommandType.EVENT, "description /to ");
+        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
     }
 
     /**
@@ -117,6 +100,28 @@ public class TestInputParser {
                         validDescription + " /from 2021-12-31 2359 /to 2022-01-01 0000"),
                 new String[] { validDescription, "2021-12-31 2359", "2022-01-01 0000" }
             ));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tests if note description is parsed correctly.
+     */
+    @Test
+    public void testParseNoteDescription_validDescription_parsedCorrectly() {
+        try {
+            // note without title
+            assertArrayEquals(
+                new String[] { "description", "" },
+                InputParser.parseNoteDescription("description")
+            );
+
+            // note with title
+            assertArrayEquals(
+                new String[] { "title", "description" },
+                InputParser.parseNoteDescription("title /content description")
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }

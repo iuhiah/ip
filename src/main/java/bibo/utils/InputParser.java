@@ -3,8 +3,9 @@ package bibo.utils;
 import java.util.Arrays;
 
 import bibo.Command.CommandType;
+import bibo.exceptions.ListIndexException;
+import bibo.exceptions.NoteFormatException;
 import bibo.exceptions.TaskFormatException;
-import bibo.exceptions.TaskListIndexException;
 import bibo.exceptions.UnknownCommandException;
 
 /**
@@ -78,14 +79,33 @@ public class InputParser {
      * @return Parsed task index.
      * @throws TaskFormatException If task index is invalid.
      */
-    public static int parseTaskIndex(String input) throws TaskListIndexException {
+    public static int parseTaskIndex(String input) throws ListIndexException {
         try {
             int index = Integer.parseInt(input);
             return index;
         } catch (NumberFormatException e) {
-            throw new TaskListIndexException(
-                TaskListIndexException.ErrorType.INVALID_INDEX.toString()
+            throw new ListIndexException(
+                ListIndexException.ErrorType.INVALID_INDEX.toString()
             );
         }
+    }
+
+    /**
+     * Parses note description from user input.
+     * If no content flag is present, whole input is considered as note description.
+     *
+     * @param input User input.
+     * @return Parsed note description.
+     * @throws NoteFormatException If note description format is invalid.
+     */
+    public static String[] parseNoteDescription(String input) throws NoteFormatException {
+        if (input.isBlank()) {
+            throw new NoteFormatException();
+        }
+
+        String[] parsedDescription = input.split(" /content ", 2);
+        return parsedDescription.length == 1
+                ? new String[] { parsedDescription[0], "" }
+                : parsedDescription;
     }
 }

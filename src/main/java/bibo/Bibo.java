@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import bibo.exceptions.BiboException;
 import bibo.exceptions.FileException;
+import bibo.notes.Notes;
 import bibo.task.Task;
+import bibo.task.TaskList;
 import bibo.utils.FileParser;
 import bibo.utils.InputParser;
 
@@ -13,6 +15,7 @@ import bibo.utils.InputParser;
  */
 public class Bibo {
     protected TaskList taskList;
+    protected Notes notes;
     private Storage storage;
     private Ui ui;
     private Command cmd;
@@ -25,6 +28,7 @@ public class Bibo {
     public Bibo() {
         this.ui = new Ui();
         this.taskList = new TaskList();
+        this.notes = new Notes();
         this.storage = new Storage();
 
         this.cmd = new Command(ui, storage);
@@ -130,7 +134,7 @@ public class Bibo {
         try {
             String[] args = InputParser.parseInput(input);
             cmd.setCommandType(args[0]);
-            response = cmd.getResponse(args[1], taskList);
+            response = cmd.getResponse(args[1], taskList, notes);
         } catch (BiboException e) {
             response = e.getMessage();
         }
