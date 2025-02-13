@@ -9,11 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
 
 /**
@@ -26,11 +22,9 @@ public class MainWindow extends AnchorPane {
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
-    @FXML
-    private ImageView biboImg;
-    @FXML
-    private ImageView userImg;
 
+    private Image biboImg = new Image(this.getClass().getResourceAsStream("/images/walle.png"));
+    private Image userImg = new Image(this.getClass().getResourceAsStream("/images/eve.png"));
     private Bibo bibo;
 
     /**
@@ -40,18 +34,8 @@ public class MainWindow extends AnchorPane {
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
 
-        Image img = new Image(getClass().getResource("/images/background.png").toExternalForm());
-        BackgroundImage bgImg = new BackgroundImage(img,
-                javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
-                javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
-                javafx.scene.layout.BackgroundPosition.CENTER,
-                new BackgroundSize(100, 100, true, true, false, true)
-        );
-        dialogContainer.setBackground(new Background(bgImg));
-
         dialogContainer.getChildren().add(
-            DialogBox.getBiboDialog("Beep boop! Bibo!")
-        );
+                DialogBox.getBiboDialog("Beep boop! Bibo!", biboImg));
     }
 
     /** Injects the Bibo instance */
@@ -60,7 +44,8 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
+     * Creates two dialog boxes, one echoing user input and the other containing
+     * Duke's reply and then appends them to
      * the dialog container. Clears the user input after processing.
      */
     @FXML
@@ -69,9 +54,8 @@ public class MainWindow extends AnchorPane {
 
         String response = bibo.getResponse(input);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input),
-                DialogBox.getBiboDialog(response)
-        );
+                DialogBox.getUserDialog(input, userImg),
+                DialogBox.getBiboDialog(response, biboImg));
 
         userInput.clear();
 
