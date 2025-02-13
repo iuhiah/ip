@@ -1,9 +1,7 @@
 package bibo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Arrays;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,31 +48,31 @@ public class TestFileParser {
     */
     @Test
     public void testParseTaskData() throws TaskFormatException {
-        assertEquals(true, Arrays.equals(
+        assertArrayEquals(
             FileParser.parseTaskData("[T][X] read book"),
             new String[] { "todo", "read book", "true" }
-        ));
-        assertEquals(true, Arrays.equals(
+        );
+        assertArrayEquals(
             FileParser.parseTaskData("[T][ ] read another book"),
             new String[] { "todo", "read another book", "false" }
-        ));
+        );
 
-        assertEquals(true, Arrays.equals(
+        assertArrayEquals(
             FileParser.parseTaskData("[D][X] return book /by xxx"),
             new String[] { "deadline", "return book /by xxx", "true" }
-        ));
-        assertEquals(true, Arrays.equals(
+        );
+        assertArrayEquals(
             FileParser.parseTaskData("[D][ ] return another book /by xxx"),
             new String[] { "deadline", "return another book /by xxx", "false" }
-        ));
+        );
 
-        assertEquals(true, Arrays.equals(
+        assertArrayEquals(
             FileParser.parseTaskData("[E][X] project meeting /from xxx /to yyy"),
             new String[] { "event", "project meeting /from xxx /to yyy", "true" }
-        ));
-        assertEquals(true, Arrays.equals(
+        );
+        assertArrayEquals(
             FileParser.parseTaskData("[E][ ] another project meeting /from xxx /to yyy"),
             new String[] { "event", "another project meeting /from xxx /to yyy", "false" }
-        ));
+        );
     }
 }

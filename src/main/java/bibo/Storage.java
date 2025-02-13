@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import bibo.exceptions.FileException;
+import bibo.task.TaskList;
 
 /**
  * Represents a file handler that handles file operations.
@@ -38,20 +39,21 @@ public class Storage {
                 Files.createDirectory(Paths.get(dataDir));
                 Files.createFile(Paths.get(getFilePath()));
                 return false;
+            } else {
+                return true;
             }
-            return true;
         } catch (IOException e) {
             throw new FileException();
         }
     }
 
     /**
-     * Loads data from file.
+     * Gets task data from file.
      *
      * @param bibo Bibo instance to load task list into.
      * @throws FileException if unable to read from file.
      */
-    protected String[] loadTaskList() throws FileException {
+    protected String[] getTaskData() throws FileException {
         if (!hasSavedData()) {
             return null;
         }
