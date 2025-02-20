@@ -42,31 +42,26 @@ public class TaskList {
      * @param cmd Command to add task.
      * @param args Arguments for task description.
      * @return Task added to task list.
-     * @throws TaskFormatException If task description format is invalid.
+     * @throws TaskFormatException If task format is invalid.
      */
     public Task addTask(Command.CommandType cmd, String args) throws TaskFormatException {
         Task task = null;
 
         try {
             String[] parsedDescription = InputParser.parseTaskDescription(cmd, args);
-            String[] dateTime = Arrays.copyOfRange(parsedDescription, 1, parsedDescription.length);
-            LocalDateTime[] parsedDateTime;
 
             switch (cmd) {
             case TODO:
                 task = new Todo(parsedDescription[0]);
                 break;
             case DEADLINE:
-                parsedDateTime = DateTimeUtil.parseDateTime(dateTime);
-                task = new Deadline(parsedDescription[0], parsedDateTime);
+                task = addDeadline(parsedDescription);
                 break;
             case EVENT:
-                parsedDateTime = DateTimeUtil.parseDateTime(dateTime);
-                task = new Event(parsedDescription[0], parsedDateTime);
+                task = addEvent(parsedDescription);
                 break;
             default:
-                // should not reach here
-                break;
+                throw new UnknownCommandException();
             }
         } catch (UnknownCommandException e) {
             throw new TaskFormatException(
@@ -76,8 +71,61 @@ public class TaskList {
             throw e;
         }
 
+        // check if task with same details already exists
+        if (tasks.contains(task)) {
+            throw new TaskFormatException(
+                TaskFormatException.ErrorType.DUPLICATE_TASK.toString()
+            );
+        }
+
         tasks.add(task);
         return task;
+    }
+
+    /**
+     * Add deadline to the task list.
+     *
+     * @param parsedDescription Description of deadline.
+     * @return Deadline task.
+     * @throws TaskFormatException If deadline format is invalid.
+     */
+    private Deadline addDeadline(String[] parsedDescription) throws TaskFormatException {
+        String[] dateTime = Arrays.copyOfRange(parsedDescription, 1, parsedDescription.length);
+        LocalDateTime[] parsedDateTime = DateTimeUtil.parseDateTime(dateTime);
+
+        if (parsedDateTime == null || parsedDateTime.length != 1) {
+            throw new TaskFormatException(
+                TaskFormatException.ErrorType.MISSING_ARGUMENT.toString()
+            );
+        }
+
+        return new Deadline(parsedDescription[0], parsedDateTime);
+    }
+
+    /**
+     * Add event to the task list.
+     *
+     * @param parsedDescription Description of event.
+     * @return Event task.
+     * @throws TaskFormatException If event format is invalid.
+     */
+    private Event addEvent(String[] parsedDescription) throws TaskFormatException {
+        String[] dateTime = Arrays.copyOfRange(parsedDescription, 1, parsedDescription.length);
+        LocalDateTime[] parsedDateTime = DateTimeUtil.parseDateTime(dateTime);
+
+        if (parsedDateTime == null || parsedDateTime.length != 2) {
+            throw new TaskFormatException(
+                TaskFormatException.ErrorType.MISSING_ARGUMENT.toString()
+            );
+        }
+
+        if (parsedDateTime[0].isAfter(parsedDateTime[1])) {
+            throw new TaskFormatException(
+                TaskFormatException.ErrorType.DATE_TIME_INVALID.toString()
+            );
+        }
+
+        return new Event(parsedDescription[0], parsedDateTime);
     }
 
     /**
@@ -88,7 +136,7 @@ public class TaskList {
      * @return Task with status changed.
      * @throws ListIndexException If task index is invalid.
      */
-    public Task changeTaskStatus(Command.CommandType cmd, String index) throws ListIndexException {
+    public Task changeTaskStatus(Command.CommandType cmd, String index) throws ListIndexException, UnknownCommandException {
         try {
             int taskIndex = InputParser.parseTaskIndex(index) - 1;
             Task task = tasks.get(taskIndex);
@@ -104,8 +152,7 @@ public class TaskList {
                 tasks.remove(taskIndex);
                 break;
             default:
-                // should not reach here
-                break;
+                throw new UnknownCommandException();
             }
 
             return task;

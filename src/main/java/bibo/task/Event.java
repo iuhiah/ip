@@ -33,16 +33,27 @@ public class Event extends Task {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Event) {
+            Event event = (Event) obj;
+            return super.equals(event)
+                    && start.equals(event.start)
+                    && end.equals(event.end);
+        }
+        return false;
+    }
+
+    @Override
     public String toFileString() {
         return "[E]" + super.toString()
-            + " /from " + super.formatDateTime(start)
-            + " /to " + super.formatDateTime(end);
+                + " /from " + super.formatDateTime(start)
+                + " /to " + super.formatDateTime(end);
     }
 
     @Override
     public String toString() {
         return "[E]" + super.toString()
-            + " (from: " + super.formatDateTime(start)
-            + " to: " + super.formatDateTime(end) + ")";
+                + " (from: " + super.formatDateTime(start)
+                + " to: " + super.formatDateTime(end) + ")";
     }
 }

@@ -14,14 +14,20 @@ public class TaskFormatException extends BiboException {
                 return "Task description is empty!";
             }
         },
-        MISSING_DEADLINE_TOKEN {
+        UNKNOWN_TASK_TYPE {
+            @Override
+            public String toString() {
+                return "Unknown task type!";
+            }
+        },
+        DEADLINE_TOKEN {
             @Override
             public String toString() {
                 return "Deadline format invalid!"
                         + "Format: deadline <description> /by <date time>";
             }
         },
-        MISSING_EVENT_TOKEN {
+        EVENT_TOKEN {
             @Override
             public String toString() {
                 return "Event format invalid!"
@@ -31,13 +37,19 @@ public class TaskFormatException extends BiboException {
         DATE_TIME_INVALID {
             @Override
             public String toString() {
-                return "Date and time format invalid!";
+                return "Start date and time must be before end date and time!";
             }
         },
-        UNKNOWN_TASK_TYPE {
+        MISSING_ARGUMENT {
             @Override
             public String toString() {
-                return "Unknown task type!";
+                return "Missing argument! Check task format.";
+            }
+        },
+        DUPLICATE_TASK {
+            @Override
+            public String toString() {
+                return "Task already exists!";
             }
         }
     }

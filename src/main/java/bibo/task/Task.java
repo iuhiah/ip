@@ -55,6 +55,15 @@ public class Task {
         return dateTime.format(DATE_TIME_FORMATTER);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Task) {
+            Task task = (Task) obj;
+            return this.description.equals(task.description);
+        }
+        return false;
+    }
+
     /**
      * Returns task string in file format.
      */

@@ -39,7 +39,24 @@ public class Deadline extends Task {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Deadline) {
+            Deadline deadline = (Deadline) obj;
+            return super.equals(deadline)
+                    && by.equals(deadline.by);
+        }
+        return false;
+    }
+
+    @Override
+    public String toFileString() {
+        return "[D]" + super.toFileString()
+                + " /by " + super.formatDateTime(by);
+    }
+
+    @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + super.formatDateTime(by) + ")";
+        return "[D]" + super.toString()
+                + " (by: " + super.formatDateTime(by) + ")";
     }
 }

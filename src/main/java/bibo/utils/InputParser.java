@@ -51,7 +51,7 @@ public class InputParser {
             args = input.split(" /by ");
             if (args.length != 2 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new TaskFormatException(
-                    TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString()
+                    TaskFormatException.ErrorType.DEADLINE_TOKEN.toString()
                 );
             }
             break;
@@ -59,7 +59,7 @@ public class InputParser {
             args = input.split(" /from | /to ");
             if (args.length != 3 || Arrays.stream(args).anyMatch(String::isBlank)) {
                 throw new TaskFormatException(
-                    TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString()
+                    TaskFormatException.ErrorType.EVENT_TOKEN.toString()
                 );
             }
             break;

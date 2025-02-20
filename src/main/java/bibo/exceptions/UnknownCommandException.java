@@ -5,7 +5,7 @@ package bibo.exceptions;
  */
 public class UnknownCommandException extends BiboException {
     public UnknownCommandException() {
-        super("Unknown command. Please provide a valid command.");
+        super("Please provide a valid command.");
     }
 
     public UnknownCommandException(String message) {

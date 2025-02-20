@@ -91,21 +91,21 @@ public class Command {
         },
         MARK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as done:\n" + task);
             }
         },
         UNMARK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as undone:\n" + task);
             }
         },
         DELETETASK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException {
+            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Noted. I've removed this task:\n" + task);
                 addTaskListSize(taskList);
