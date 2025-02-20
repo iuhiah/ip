@@ -23,6 +23,7 @@ text-ui-test/EXPECTED-UNIX.TXT
 *.class
 
 # data files
+data/
 src/main/data/
 text-ui-test/data/
 
