@@ -21,7 +21,7 @@ Example usage: `bye`
 Expected output:
 
 ```
-Goodbye! Hope to see you again soon!
+Bye! Hope to see you again soon!
 ```
 The program will exit shortly after.
 
@@ -137,7 +137,7 @@ Here are the notes in your list:
 1. read book
 ```
 
-* `note CONTENT`: Adds a note with the given content.
+* `note CONTENT`: Adds a note with the given content. Use this if you do not need a title for the note.
 * `note TITLE /content CONTENT`: Adds a note with the given title and content.
 
 Example of expected output after running `note read book`:
