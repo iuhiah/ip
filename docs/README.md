@@ -1,6 +1,6 @@
 # Bibo User Guide
 
-![product screenshot](demo.png)
+![product screenshot](Ui.png)
 
 > "Beep boop... Beeboo... Bibo?" - Bibo, probably
 
