@@ -55,6 +55,31 @@ public class Command {
                 ui.close();
             }
         },
+        HELP {
+            @Override
+            protected void execute(String args, TaskList taskList, Notes notes) {
+                messages.add("Here are the list of commands:\n");
+
+                messages.add("1. bye");
+                messages.add("2. help");
+
+                messages.add("3. list");
+                messages.add("4. todo DESCRIPTION");
+                messages.add("5. deadline DESCRIPTION /by DATE/TIME");
+                messages.add("6. event DESCRIPTION /from DATE/TIME /to DATE/TIME");
+                messages.add("7. mark INDEX");
+                messages.add("8. unmark INDEX");
+                messages.add("9. deletetask INDEX");
+                messages.add("10. find KEYWORD");
+
+                messages.add("13. notes");
+                messages.add("11. note DESCRIPTION");
+                messages.add("12. deletenote INDEX");
+
+                messages.add("\nMore details can be found in the user guide at:");
+                messages.add("https://iuhiah.github.io/ip/");
+            }
+        },
         LIST {
             @Override
             protected void execute(String args, TaskList taskList, Notes notes) {

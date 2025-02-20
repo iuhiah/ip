@@ -23,15 +23,13 @@ public class TaskFormatException extends BiboException {
         DEADLINE_TOKEN {
             @Override
             public String toString() {
-                return "Deadline format invalid!"
-                        + "Format: deadline <description> /by <date time>";
+                return "Deadline format invalid!";
             }
         },
         EVENT_TOKEN {
             @Override
             public String toString() {
-                return "Event format invalid!"
-                        + "Format: event <description> /from <start date time> /to <end date time>";
+                return "Event format invalid!";
             }
         },
         DATE_TIME_INVALID {

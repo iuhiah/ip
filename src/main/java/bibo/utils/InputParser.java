@@ -19,6 +19,7 @@ public class InputParser {
      * @return Parsed command and arguments.
      */
     public static String[] parseInput(String input) {
+        input.trim();
         String[] result = input.split(" ", 2);
         return result.length == 1
                 ? new String[] { result[0], "" }
@@ -103,7 +104,14 @@ public class InputParser {
             throw new NoteFormatException();
         }
 
-        String[] parsedDescription = input.split(" /content ", 2);
+        String[] parsedDescription = input.split(" /content ");
+
+        if (parsedDescription.length > 2) {
+            throw new NoteFormatException(
+                NoteFormatException.ErrorType.CONTENT_TOKEN.toString()
+            );
+        }
+
         return parsedDescription.length == 1
                 ? new String[] { parsedDescription[0], "" }
                 : parsedDescription;

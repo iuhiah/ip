@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
-        DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][yyyy-MM-dd'T'kk:mm]");
+        DateTimeFormatter.ofPattern("[dd-MM-yyyy kkmm][dd MMM yyyy hh:mm a]");
 
     /**
      * Parses date and time from string.

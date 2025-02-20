@@ -38,17 +38,9 @@ If you are unsure of the path, type `cd` followed by a space and drag the folder
 
 If the installation is successful, you should see the [expected output](#expected-output).
 
-## Features
-* `list`: Lists all tasks in the task list.
-* `todo <description>`: Adds a todo task with the given description.
-* `deadline <description> /by <date/time>`: Adds a deadline task with the given description and date.
-* `event <description> /from <date/time> /to <date/time>`: Adds an event task with the given description and date.
-* `mark <task number>`: Marks the task with the given task number as done.
-* `unmark <task number>`: Marks the task with the given task number as not done.
-* `delete <task number>`: Deletes the task with the given task number.
-* `find <keyword>`: Lists all tasks with the given keyword in the description.
+## User Guide/Features
 
-All date/time arguments must be in the format `<day>-<month>-<year> <hour><minute>` in numbers.
+User guide and features can be found [here](https://iuhiah.github.io/ip/).
 
 # Expected Output
 ```
