@@ -23,8 +23,8 @@ public class Command {
     /**
      * Constructs a command.
      *
-     * @param cmd Command type.
-     * @param ui Ui object.
+     * @param cmd     Command type.
+     * @param ui      Ui object.
      * @param storage Storage object.
      */
     public Command(Ui ui, Storage storage) {
@@ -91,21 +91,24 @@ public class Command {
         },
         MARK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
+            protected void execute(String args, TaskList taskList, Notes notes)
+                    throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as done:\n" + task);
             }
         },
         UNMARK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
+            protected void execute(String args, TaskList taskList, Notes notes)
+                    throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Nice! I've marked this task as undone:\n" + task);
             }
         },
         DELETETASK {
             @Override
-            protected void execute(String args, TaskList taskList, Notes notes) throws ListIndexException, UnknownCommandException {
+            protected void execute(String args, TaskList taskList, Notes notes)
+                    throws ListIndexException, UnknownCommandException {
                 Task task = taskList.changeTaskStatus(this, args);
                 messages.add("Noted. I've removed this task:\n" + task);
                 addTaskListSize(taskList);
@@ -148,17 +151,17 @@ public class Command {
             }
         };
 
-
         private static ArrayList<String> messages = new ArrayList<String>();
 
         /**
          * Executes command.
          *
-         * @param args Arguments for command.
+         * @param args     Arguments for command.
          * @param taskList Task list to execute command on.
          * @throws BiboException If an error occurs during execution.
          */
-        protected void execute(String args, TaskList taskList, Notes notes) throws BiboException {}
+        protected void execute(String args, TaskList taskList, Notes notes) throws BiboException {
+        }
 
         protected void addTaskListSize(TaskList taskList) {
             int size = taskList.getTaskListSize();

@@ -39,7 +39,7 @@ public class TaskList {
      * Adds task to the task list.
      * Task types: todo, deadline, event.
      *
-     * @param cmd Command to add task.
+     * @param cmd  Command to add task.
      * @param args Arguments for task description.
      * @return Task added to task list.
      * @throws TaskFormatException If task format is invalid.
@@ -65,8 +65,7 @@ public class TaskList {
             }
         } catch (UnknownCommandException e) {
             throw new TaskFormatException(
-                TaskFormatException.ErrorType.UNKNOWN_TASK_TYPE.toString()
-            );
+                    TaskFormatException.ErrorType.UNKNOWN_TASK_TYPE.toString());
         } catch (TaskFormatException e) {
             throw e;
         }
@@ -74,8 +73,7 @@ public class TaskList {
         // check if task with same details already exists
         if (tasks.contains(task)) {
             throw new TaskFormatException(
-                TaskFormatException.ErrorType.DUPLICATE_TASK.toString()
-            );
+                    TaskFormatException.ErrorType.DUPLICATE_TASK.toString());
         }
 
         tasks.add(task);
@@ -95,8 +93,7 @@ public class TaskList {
 
         if (parsedDateTime == null || parsedDateTime.length != 1) {
             throw new TaskFormatException(
-                TaskFormatException.ErrorType.MISSING_ARGUMENT.toString()
-            );
+                    TaskFormatException.ErrorType.MISSING_ARGUMENT.toString());
         }
 
         return new Deadline(parsedDescription[0], parsedDateTime);
@@ -115,14 +112,12 @@ public class TaskList {
 
         if (parsedDateTime == null || parsedDateTime.length != 2) {
             throw new TaskFormatException(
-                TaskFormatException.ErrorType.MISSING_ARGUMENT.toString()
-            );
+                    TaskFormatException.ErrorType.MISSING_ARGUMENT.toString());
         }
 
         if (parsedDateTime[0].isAfter(parsedDateTime[1])) {
             throw new TaskFormatException(
-                TaskFormatException.ErrorType.DATE_TIME_INVALID.toString()
-            );
+                    TaskFormatException.ErrorType.DATE_TIME_INVALID.toString());
         }
 
         return new Event(parsedDescription[0], parsedDateTime);
@@ -136,7 +131,8 @@ public class TaskList {
      * @return Task with status changed.
      * @throws ListIndexException If task index is invalid.
      */
-    public Task changeTaskStatus(Command.CommandType cmd, String index) throws ListIndexException, UnknownCommandException {
+    public Task changeTaskStatus(Command.CommandType cmd, String index)
+            throws ListIndexException, UnknownCommandException {
         try {
             int taskIndex = InputParser.parseTaskIndex(index) - 1;
             Task task = tasks.get(taskIndex);
@@ -158,8 +154,7 @@ public class TaskList {
             return task;
         } catch (IndexOutOfBoundsException e) {
             throw new ListIndexException(
-                ListIndexException.ErrorType.INVALID_INDEX.toString()
-            );
+                    ListIndexException.ErrorType.INVALID_INDEX.toString());
         } catch (ListIndexException e) {
             throw e;
         }

@@ -62,19 +62,19 @@ public class TestInputParser {
     public void testParseTaskDescription_invalidDescription_exceptionThrown() {
         assertThrows(TaskFormatException.class, () -> {
             InputParser.parseTaskDescription(CommandType.DEADLINE, "description");
-        }, TaskFormatException.ErrorType.MISSING_DEADLINE_TOKEN.toString());
+        }, TaskFormatException.ErrorType.DEADLINE_TOKEN.toString());
 
         assertThrows(TaskFormatException.class, () -> {
             InputParser.parseTaskDescription(CommandType.EVENT, "description");
-        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
+        }, TaskFormatException.ErrorType.EVENT_TOKEN.toString());
 
         assertThrows(TaskFormatException.class, () -> {
             InputParser.parseTaskDescription(CommandType.EVENT, "description /from ");
-        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
+        }, TaskFormatException.ErrorType.EVENT_TOKEN.toString());
 
         assertThrows(TaskFormatException.class, () -> {
             InputParser.parseTaskDescription(CommandType.EVENT, "description /to ");
-        }, TaskFormatException.ErrorType.MISSING_EVENT_TOKEN.toString());
+        }, TaskFormatException.ErrorType.EVENT_TOKEN.toString());
     }
 
     /**

@@ -9,7 +9,8 @@ import javafx.application.Application;
 public class Launcher {
     /**
      * Main method to launch the application.
-     * @param args
+     *
+     * @param args Command line arguments.
      */
     public static void main(String[] args) {
         Application.launch(Main.class, args);
