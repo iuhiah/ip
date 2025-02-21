@@ -4,6 +4,9 @@ package bibo.exceptions;
  * Represents an exception thrown when note format is invalid.
  */
 public class NoteFormatException extends BiboException {
+    /**
+     * Represents the type of error that occurred.
+     */
     public enum ErrorType {
         EMPTY {
             @Override
