@@ -33,18 +33,28 @@ public class Storage {
     protected boolean hasSavedData() throws FileException {
         System.out.println("Checking for saved data...");
 
-        try {
-            if (!Files.exists(Paths.get(getFilePath()))) {
-                System.out.println("Saved data not found. Creating new file to store data...");
+        if (!Files.exists(Paths.get(dataDir))) {
+            System.out.println("Data directory not found. Creating new directory to store data...");
+            try {
                 Files.createDirectory(Paths.get(dataDir));
-                Files.createFile(Paths.get(getFilePath()));
-                return false;
-            } else {
-                return true;
+            } catch (IOException e) {
+                throw new FileException();
             }
-        } catch (IOException e) {
-            throw new FileException();
         }
+
+        if (!Files.exists(Paths.get(getFilePath()))) {
+            System.out.println("Saved data not found. Creating new file to store data...");
+
+            try {
+                Files.createFile(Paths.get(getFilePath()));
+            } catch (IOException e) {
+                throw new FileException();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
