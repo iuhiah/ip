@@ -2,6 +2,7 @@ package bibo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test;
 public class TestStorage {
     private static Storage storage;
     private static String filePath;
+    private static String dataDir;
 
     private void resetTestFile() throws Exception {
         Files.deleteIfExists(Paths.get(filePath));
@@ -34,6 +36,15 @@ public class TestStorage {
         Method method = Storage.class.getDeclaredMethod("getFilePath");
         method.setAccessible(true);
         filePath = (String) method.invoke(storage);
+
+        Field dataDirField = Storage.class.getDeclaredField("dataDir");
+        dataDirField.setAccessible(true);
+        dataDir = (String) dataDirField.get(storage);
+
+        // create data directory if it does not exist
+        if (!Files.exists(Paths.get(dataDir))) {
+            Files.createDirectory(Paths.get(dataDir));
+        }
 
         System.out.println("Setup complete. Starting tests.");
     }
@@ -63,6 +74,8 @@ public class TestStorage {
         try {
             Files.deleteIfExists(Paths.get(filePath));
             Files.deleteIfExists(Paths.get(filePath + ".corrupted"));
+
+            Files.deleteIfExists(Paths.get(dataDir));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +105,7 @@ public class TestStorage {
      * Tests if hasSavedData returns true when file is found.
      */
     @Test
-    public void testHasSavedData_fileFound_returnsTrue()  throws Exception {
+    public void testHasSavedData_fileFound_returnsTrue() throws Exception {
         Method method = Storage.class.getDeclaredMethod("hasSavedData");
         method.setAccessible(true);
         boolean hasSavedData = (boolean) method.invoke(storage);
@@ -112,5 +125,6 @@ public class TestStorage {
         method.invoke(storage, 0, 1);
 
         assertEquals(true, Files.exists(Paths.get(filePath + ".corrupted")));
+
     }
 }
